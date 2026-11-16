@@ -321,11 +321,20 @@
       '<p>Sharing records: <strong>' + activities.length + '</strong></p>';
 
     document.getElementById('adminMembers').innerHTML = profiles.length
-      ? profiles.map(member =>
-          '<p>' + escapeAdminText(member.display_name || 'Member') +
-          ' — Joined: ' + escapeAdminText(member.created_at || 'Unknown') + '</p>'
-        ).join('')
-      : '<p>No member profiles found yet.</p>';
+  ? profiles.map(member =>
+      '<div style="padding:12px;margin:8px 0;background:#222;border-radius:8px;">' +
+      '<strong>' + escapeAdminText(member.display_name || 'Member') + '</strong>' +
+      '<p>Account ID: ' + escapeAdminText(member.id) + '</p>' +
+      '<p>Joined: ' + escapeAdminText(member.created_at || 'Unknown') + '</p>' +
+      '<button onclick="alert(\'Member ID: ' + escapeAdminText(member.id) + '\')">View member ID</button>' +
+      '</div>'
+    ).join('')
+  : '<p>No member profiles found yet.</p>';
+    
+         
+        
+      
+    
 
     document.getElementById('adminActivity').innerHTML = activities.length
       ? activities.map(item =>
