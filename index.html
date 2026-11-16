@@ -273,5 +273,78 @@
 
   checkSession();
 </script>
-</body>
+</body><section id="adminPanel" style="display:none; padding:20px; margin:20px auto; max-width:900px; background:#111; color:white; border-radius:12px;">
+  <h2>Inamke Universe Network — Admin Dashboard</h2>
+  <p id="adminStatus">Checking administrator access...</p>
+  <div id="adminStats"></div>
+  <h3>Registered Members</h3>
+  <div id="adminMembers">Loading...</div>
+  <h3>Recent Sharing Activity</h3>
+  <div id="adminActivity">Loading...</div>
+</section>
+
+<script>
+(async function () {
+  const panel = document.getElementById('adminPanel');
+  const status = document.getElementById('adminStatus');
+
+  try {
+    const { data: isAdmin, error: adminError } = await db.rpc('is_admin');
+
+    if (adminError || !isAdmin) {
+      status.textContent = 'Administrator access only.';
+      return;
+    }
+
+    panel.style.display = 'block';
+    status.textContent = 'Administrator access verified.';
+
+    const [profilesResult, pointsResult, activityResult] = await Promise.all([
+      db.from('profiles').select('id, display_name, created_at'),
+      db.from('points_ledger').select('user_id, points'),
+      db.from('sharing_activity').select('user_id, provider, verified, created_at').order('created_at', { ascending: false }).limit(20)
+    ]);
+
+    if (profilesResult.error || pointsResult.error || activityResult.error) {
+      status.textContent = 'Access verified, but some dashboard data could not load. Check database policies.';
+      return;
+    }
+
+    const profiles = profilesResult.data || [];
+    const points = pointsResult.data || [];
+    const activities = activityResult.data || [];
+    const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
+
+    document.getElementById('adminStats').innerHTML =
+      '<p>Registered members: <strong>' + profiles.length + '</strong></p>' +
+      '<p>Total points recorded: <strong>' + totalPoints + '</strong></p>' +
+      '<p>Sharing records: <strong>' + activities.length + '</strong></p>';
+
+    document.getElementById('adminMembers').innerHTML = profiles.length
+      ? profiles.map(member =>
+          '<p>' + escapeAdminText(member.display_name || 'Member') +
+          ' — Joined: ' + escapeAdminText(member.created_at || 'Unknown') + '</p>'
+        ).join('')
+      : '<p>No member profiles found yet.</p>';
+
+    document.getElementById('adminActivity').innerHTML = activities.length
+      ? activities.map(item =>
+          '<p>Provider: ' + escapeAdminText(item.provider || 'Not set') +
+          ' — Verified: ' + (item.verified ? 'Yes' : 'No') +
+          ' — Date: ' + escapeAdminText(item.created_at || '') + '</p>'
+        ).join('')
+      : '<p>No sharing activity recorded yet.</p>';
+
+  } catch (error) {
+    status.textContent = 'Could not load admin dashboard. Please check your connection.';
+  }
+
+  function escapeAdminText(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;',
+      '"': '&quot;', "'": '&#39;'
+    }[char]));
+  }
+})();
+</script>
 </html>
