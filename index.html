@@ -1,65 +1,277 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Inamke Universe Network</title>
-<style>
-body{margin:0;background:#081710;color:white;font-family:Arial,sans-serif}
-header{padding:22px;background:#102b1d;color:#80e5a6;font-weight:bold}
-main{max-width:850px;margin:auto;padding:30px 20px}
-h1{font-size:42px;color:#80e5a6}
-p{line-height:1.7;color:#c6d5cb}
-.card{background:#142b20;padding:22px;border-radius:14px;margin:20px 0}
-input,select{width:100%;padding:13px;margin:10px 0;border:0;border-radius:7px;box-sizing:border-box}
-button{background:#80e5a6;color:#092016;padding:14px;border:0;border-radius:8px;font-weight:bold;width:100%}
-footer{text-align:center;padding:25px;color:#a9b9ae}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inamke Universe Network</title>
+  <meta name="description" content="Join Inamke Universe Network, a worldwide internet-sharing and rewards platform.">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 14px;
+      font-family: Arial, sans-serif;
+      background: #101b16;
+      color: #fff;
+    }
+    .container {
+      max-width: 440px;
+      margin: 30px auto;
+      background: #1b2b22;
+      padding: 26px;
+      border-radius: 18px;
+      border: 1px solid #365341;
+    }
+    h1 { text-align: center; color: #a7e6ad; font-size: 25px; }
+    h2 { text-align: center; font-size: 21px; }
+    p { color: #d0ded3; line-height: 1.6; }
+    input, button {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+    input {
+      border: 1px solid #55715d;
+      background: #102018;
+      color: white;
+    }
+    button {
+      border: 0;
+      background: #a7e6ad;
+      color: #102018;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #304b39;
+      color: white;
+    }
+    .switch {
+      text-align: center;
+      margin-top: 16px;
+      color: #a7e6ad;
+      cursor: pointer;
+    }
+    .small { font-size: 12px; color: #b9c9bd; }
+    #message { margin-top: 12px; overflow-wrap: anywhere; }
+    .hidden { display: none; }
+    .balance {
+      background: #102018;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .points { font-size: 34px; color: #a7e6ad; font-weight: bold; }
+  </style>
 </head>
 <body>
-<header>INAMKE UNIVERSE NETWORK</header>
-<main>
-<h1>Your Connection. Your Choice.</h1>
-<p>Welcome to Inamke Universe Network, a global project designed to connect people through a voluntary bandwidth-sharing opportunity.</p>
 
-<div class="card">
-<h2>How It Works</h2>
-<p>1. Register your interest.</p>
-<p>2. Learn about our bandwidth-sharing programme.</p>
-<p>3. Participate voluntarily when the service becomes available.</p>
-<p>4. Earn points for eligible verified activity under our published rules.</p>
-</div>
+  <div class="container">
+    <h1>INAMKE UNIVERSE NETWORK</h1>
+    <p style="text-align:center;">One Nature. One Humanity. One Universe.</p>
 
-<div class="card">
-<h2>Join Our Global Network</h2>
-<form onsubmit="event.preventDefault();alert('This is a demo. Your details have not been saved.');">
-<input type="text" placeholder="Your name" required>
-<input type="email" placeholder="Email address" required>
-<select required>
-<option value="">Select your country</option>
-<option>Nigeria</option>
-<option>Ghana</option>
-<option>South Africa</option>
-<option>United States</option>
-<option>United Kingdom</option>
-<option>Canada</option>
-<option>Other</option>
-</select>
-<p><input type="checkbox" required style="width:auto"> I understand this is an early-access demonstration.</p>
-<button type="submit">JOIN NETWORK</button>
-</form>
-</div>
+    <section id="authSection">
+      <h2 id="formTitle">Create Your Account</h2>
+      <p style="text-align:center;">Join our worldwide community.</p>
 
-<div class="card">
-<h2>Our Mission</h2>
-<p>Building a responsible global network where participation is voluntary, transparent and secure.</p>
-<p>Bandwidth sharing is not active yet. No internet data is collected or routed by this website.</p>
-</div>
-</main>
-<footer>
-Inamke Universe Network<br>
-One Nature. One Humanity. One Universe.
-</footer>
+      <form id="authForm">
+        <input id="name" type="text" placeholder="Your name" autocomplete="name">
+        <input id="email" type="email" placeholder="Email address" required autocomplete="email">
+        <input id="password" type="password" placeholder="Password (minimum 6 characters)" required minlength="6" autocomplete="new-password">
+        <button id="submitButton" type="submit">Create Account</button>
+      </form>
+
+      <button class="secondary" id="googleButton" type="button">
+        Continue with Google
+      </button>
+
+      <p class="switch" id="switchMode">Already have an account? Log in</p>
+      <p id="message" role="status"></p>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <h2>Welcome to Inamke Universe Network</h2>
+      <p id="welcome"></p>
+
+      <div class="balance">
+        <p>Your verified points</p>
+        <div class="points" id="points">0</div>
+        <p class="small">Points are displayed from recorded activity.</p>
+      </div>
+
+      <p><strong>Internet sharing:</strong> Not active yet.</p>
+      <p>We will only enable bandwidth sharing through an approved provider, with your permission.</p>
+
+      <button class="secondary" id="logoutButton">Log Out</button>
+      <p id="dashboardMessage" role="status"></p>
+    </section>
+
+    <p class="small" style="text-align:center;margin-top:25px;">
+      Your account information is protected by database access controls.
+      Bandwidth sharing and rewards are not yet active.
+    </p>
+  </div>
+
+<script>
+  const SUPABASE_URL = "https://dhyaqpiucpymbgbmparj.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_-SwxOicj2jIXaZsZnknT5w_sStDzE2Y";
+
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const authSection = document.getElementById("authSection");
+  const dashboard = document.getElementById("dashboard");
+  const form = document.getElementById("authForm");
+  const message = document.getElementById("message");
+  const dashboardMessage = document.getElementById("dashboardMessage");
+
+  let loginMode = false;
+
+  function showMessage(text) {
+    message.textContent = text;
+  }
+
+  function setLoginMode(value) {
+    loginMode = value;
+    document.getElementById("formTitle").textContent =
+      loginMode ? "Welcome Back" : "Create Your Account";
+    document.getElementById("submitButton").textContent =
+      loginMode ? "Log In" : "Create Account";
+    document.getElementById("name").classList.toggle("hidden", loginMode);
+    document.getElementById("name").required = !loginMode;
+    document.getElementById("switchMode").textContent =
+      loginMode ? "Need an account? Sign up" : "Already have an account? Log in";
+    showMessage("");
+  }
+
+  document.getElementById("switchMode").addEventListener("click", () => {
+    setLoginMode(!loginMode);
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    showMessage("Please wait...");
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const name = document.getElementById("name").value.trim();
+
+    try {
+      if (loginMode) {
+        const { error } = await db.auth.signInWithPassword({
+          email,
+          password
+        });
+        if (error) throw error;
+      } else {
+        const { data, error } = await db.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { display_name: name },
+            emailRedirectTo: window.location.origin + window.location.pathname
+          }
+        });
+        if (error) throw error;
+
+        if (!data.session) {
+          showMessage("Account created! Check your email to confirm your account, then log in.");
+        } else {
+          showMessage("Account created successfully!");
+        }
+      }
+    } catch (error) {
+      showMessage(error.message);
+    }
+  });
+
+  document.getElementById("googleButton").addEventListener("click", async () => {
+    showMessage("Connecting to Google...");
+    const { error } = await db.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin + window.location.pathname
+      }
+    });
+    if (error) showMessage(error.message);
+  });
+
+  async function loadDashboard(user) {
+    authSection.classList.add("hidden");
+    dashboard.classList.remove("hidden");
+    dashboardMessage.textContent = "Loading your account...";
+
+    document.getElementById("welcome").textContent =
+      "Hello, " + (user.user_metadata?.display_name || user.email || "Member");
+
+    const { data: profile, error: profileError } = await db
+      .from("profiles")
+      .select("id, display_name")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profileError) {
+      dashboardMessage.textContent = "Could not load your profile: " + profileError.message;
+      return;
+    }
+
+    if (!profile) {
+      const { error } = await db.from("profiles").insert({
+        id: user.id,
+        display_name: user.user_metadata?.display_name || ""
+      });
+      if (error) {
+        dashboardMessage.textContent = "Profile setup issue: " + error.message;
+        return;
+      }
+    }
+
+    const { data: entries, error: pointsError } = await db
+      .from("points_ledger")
+      .select("points")
+      .eq("user_id", user.id);
+
+    if (pointsError) {
+      dashboardMessage.textContent = "Could not load points: " + pointsError.message;
+      return;
+    }
+
+    const total = (entries || []).reduce((sum, item) => sum + item.points, 0);
+    document.getElementById("points").textContent = total;
+    dashboardMessage.textContent = "Your account is ready.";
+  }
+
+  async function checkSession() {
+    const { data, error } = await db.auth.getSession();
+    if (error) {
+      showMessage(error.message);
+      return;
+    }
+    if (data.session) await loadDashboard(data.session.user);
+  }
+
+  db.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      setTimeout(() => loadDashboard(session.user), 0);
+    } else if (event === "SIGNED_OUT") {
+      dashboard.classList.add("hidden");
+      authSection.classList.remove("hidden");
+      setLoginMode(true);
+    }
+  });
+
+  document.getElementById("logoutButton").addEventListener("click", async () => {
+    dashboardMessage.textContent = "Logging out...";
+    const { error } = await db.auth.signOut();
+    if (error) dashboardMessage.textContent = error.message;
+  });
+
+  checkSession();
+</script>
 </body>
 </html>
