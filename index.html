@@ -324,33 +324,29 @@
         const points = pointsResult.data || [];
         const activities = activityResult.data || [];
         const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
+        const today = new Date().toISOString().slice(0, 10);
+        const todayRegistrations = profiles.filter(member =>
+          member.created_at && member.created_at.slice(0, 10) === today
+        ).length;
+        const todayActivities = activities.filter(item =>
+          item.created_at && item.created_at.slice(0, 10) === today
+        );
+        const verifiedToday = todayActivities.filter(item => item.verified).length;
 
         document.getElementById("adminStats").innerHTML =
           "<p>Registered members: <strong>" + profiles.length + "</strong></p>" +
           "<p>Total points recorded: <strong>" + totalPoints + "</strong></p>" +
-          "<p>Sharing records: <strong>" + activities.length + "</strong></p>";
+          "<p>Sharing records: <strong>" + activities.length + "</strong></p>" +
+          "<p>Today's registrations: <strong>" + todayRegistrations + "</strong></p>" +
+          "<p>Today's sharing records: <strong>" + todayActivities.length + "</strong></p>" +
+          "<p>Verified activity today: <strong>" + verifiedToday + "</strong></p>";
 
         document.getElementById("adminMembers").innerHTML = profiles.length
           ? profiles.map(member => {
               const memberPoints = points.filter(point => point.user_id === member.id);
               const totalMemberPoints = memberPoints.reduce(
                 (sum, point) => sum + Number(point.points || 0), 0
-              );const today = new Date().toISOString().slice(0, 10);
-
-const todayRegistrations = profiles.filter(member =>
-  member.created_at && member.created_at.slice(0, 10) === today
-).length;
-
-const todayActivities = activities.filter(item =>
-  item.created_at && item.created_at.slice(0, 10) === today
-);
-
-const verifiedToday = todayActivities.filter(item => item.verified).length;
-
-document.getElementById('adminStats').innerHTML +=
-  '<p>Today\\'s registrations: <strong>' + todayRegistrations + '</strong></p>' +
-  '<p>Today\\'s sharing records: <strong>' + todayActivities.length + '</strong></p>' +
-  '<p>Verified activity today: <strong>' + verifiedToday + '</strong></p>';
+              );
               const memberActivity = activities.filter(activity => activity.user_id === member.id);
 
               return `
@@ -415,7 +411,7 @@ document.getElementById('adminStats').innerHTML +=
       }
 
       function escapeAdminText(value) {
-        return String(value).replace(/[&<>"']/g, char => ({
+        return String(value).replace(/[&<>\"']/g, char => ({
           "&": "&amp;",
           "<": "&lt;",
           ">": "&gt;",
