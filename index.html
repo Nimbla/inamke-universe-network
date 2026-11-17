@@ -143,6 +143,7 @@
     const dashboardMessage = document.getElementById("dashboardMessage");
 
     let loginMode = false;
+    let dashboardUserId = null;
 
     function showMessage(text) {
       message.textContent = text;
@@ -218,6 +219,14 @@
     });
 
     async function loadDashboard(user) {
+      if (!user || !user.id) return;
+
+      if (dashboardUserId && dashboardUserId !== user.id) {
+        dashboardUserId = user.id;
+      } else if (!dashboardUserId) {
+        dashboardUserId = user.id;
+      }
+
       authSection.classList.add("hidden");
       dashboard.classList.remove("hidden");
       dashboardMessage.textContent = "Loading your account...";
@@ -268,13 +277,18 @@
         showMessage(error.message);
         return;
       }
-      if (data.session) await loadDashboard(data.session.user);
+      if (data.session) {
+        await loadDashboard(data.session.user);
+      }
     }
 
-    db.auth.onAuthStateChange((event, session) => {
+    db.auth.onAuthStateChange(async (event, session) => {
       if (session) {
-        setTimeout(() => loadDashboard(session.user), 0);
+        if (!dashboardUserId || dashboardUserId !== session.user.id) {
+          await loadDashboard(session.user);
+        }
       } else if (event === "SIGNED_OUT") {
+        dashboardUserId = null;
         dashboard.classList.add("hidden");
         authSection.classList.remove("hidden");
         setLoginMode(true);
@@ -294,6 +308,8 @@
     (async function () {
       const panel = document.getElementById("adminPanel");
       const status = document.getElementById("adminStatus");
+      const adminStats = document.getElementById("adminStats");
+      const memberSearch = document.getElementById("memberSearch");
 
       try {
         const { data: isAdmin, error: adminError } = await db.rpc("is_admin");
@@ -312,7 +328,6 @@
           db.from("sharing_activity")
             .select("user_id, provider, verified, created_at")
             .order("created_at", { ascending: false })
-            .limit(20)
         ]);
 
         if (profilesResult.error || pointsResult.error || activityResult.error) {
@@ -333,10 +348,10 @@
         );
         const verifiedToday = todayActivities.filter(item => item.verified).length;
 
-        document.getElementById("adminStats").innerHTML =
+        adminStats.innerHTML =
           "<p>Registered members: <strong>" + profiles.length + "</strong></p>" +
           "<p>Total points recorded: <strong>" + totalPoints + "</strong></p>" +
-          "<p>Sharing records: <strong>" + activities.length + "</strong></p>" +
+          "<p>Recent sharing records: <strong>" + activities.length + "</strong></p>" +
           "<p>Today's registrations: <strong>" + todayRegistrations + "</strong></p>" +
           "<p>Today's sharing records: <strong>" + todayActivities.length + "</strong></p>" +
           "<p>Verified activity today: <strong>" + verifiedToday + "</strong></p>";
@@ -345,7 +360,8 @@
           ? profiles.map(member => {
               const memberPoints = points.filter(point => point.user_id === member.id);
               const totalMemberPoints = memberPoints.reduce(
-                (sum, point) => sum + Number(point.points || 0), 0
+                (sum, point) => sum + Number(point.points || 0),
+                0
               );
               const memberActivity = activities.filter(activity => activity.user_id === member.id);
 
@@ -358,14 +374,13 @@
                     <p>Joined: ${escapeAdminText(member.created_at || "Unknown")}</p>
                     <p>Total points: ${totalMemberPoints}</p>
                     <p>Points records: ${memberPoints.length}</p>
-                    <p>Sharing records in recent activity: ${memberActivity.length}</p>
+                    <p>Sharing records: ${memberActivity.length}</p>
                   </details>
                 </div>
               `;
             }).join("")
           : "<p>No member profiles found yet.</p>";
 
-        const memberSearch = document.getElementById("memberSearch");
         memberSearch.addEventListener("input", function () {
           const searchTerm = this.value.toLowerCase().trim();
           document.querySelectorAll("#adminMembers > div").forEach(card => {
@@ -387,8 +402,8 @@
                   <strong>${escapeAdminText(member.display_name || "Member")}</strong>
                   <p>Joined: ${escapeAdminText(member.created_at || "Unknown")}</p>
                   <p>Recorded points: ${memberPoints}</p>
-                  <p>Sharing records in recent 20: ${memberRecords.length}</p>
-                  <p>Verified records in recent 20: ${verifiedRecords}</p>
+                  <p>Sharing records: ${memberRecords.length}</p>
+                  <p>Verified records: ${verifiedRecords}</p>
                   <p>Latest status: ${
                     memberRecords.length
                       ? (memberRecords[0].verified ? "Verified" : "Not verified")
@@ -407,6 +422,7 @@
             ).join("")
           : "<p>No sharing activity recorded yet.</p>";
       } catch (error) {
+        console.error(error);
         status.textContent = "Could not load admin dashboard. Please check your connection.";
       }
 
