@@ -277,7 +277,12 @@
   <h2>Inamke Universe Network — Admin Dashboard</h2>
   <p id="adminStatus">Checking administrator access...</p>
   <div id="adminStats"></div>
-  <h3>Registered Members</h3>
+  <h3>Registered Members</h3><input
+  type="search"
+  id="memberSearch"
+  placeholder="Search by member name or account ID..."
+  style="width:100%;padding:12px;margin:10px 0;border-radius:8px;box-sizing:border-box;"
+>
   <div id="adminMembers">Loading...</div>
   <h3>Recent Sharing Activity</h3>
   <div id="adminActivity">Loading...</div>
@@ -344,7 +349,16 @@
     }).join('')
   : '<p>No member profiles found yet.</p>';
   
-    
+    const memberSearch = document.getElementById('memberSearch');
+
+memberSearch.addEventListener('input', function () {
+  const searchTerm = this.value.toLowerCase().trim();
+
+  document.querySelectorAll('#adminMembers > div').forEach(card => {
+    const memberText = card.textContent.toLowerCase();
+    card.style.display = memberText.includes(searchTerm) ? 'block' : 'none';
+  });
+});
       
       
       
