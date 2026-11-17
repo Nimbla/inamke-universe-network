@@ -406,7 +406,11 @@ const accountStatus = memberStatus ? memberStatus.status : 'pending';
   <option value="active" ${accountStatus === 'active' ? 'selected' : ''}>Active</option>
   <option value="suspended" ${accountStatus === 'suspended' ? 'selected' : ''}>Suspended</option>
   <option value="pending" ${accountStatus === 'pending' ? 'selected' : ''}>Pending</option>
-</select>
+</select><textarea
+  id="note-${member.id}"
+  placeholder="Enter admin note or reason..."
+  style="width:100%;padding:10px;margin:8px 0;border-radius:8px;box-sizing:border-box;"
+>${escapeAdminText(memberStatus?.admin_note || '')}</textarea>
 <button onclick="updateMemberStatus('${member.id}')">Save Status</button>
                     <p>Sharing records: ${memberActivity.length}</p>
                   </details>
@@ -492,11 +496,21 @@ window.updateMemberStatus = async function(memberId) {
 
   const { error } = await db
     .from('member_status')
-    .upsert({
-      user_id: memberId,
-      status: newStatus,
-      updated_at: new Date().toISOString()
-    }, { onConflict: 'user_id' });
+    const noteElement = document.getElementById(`note-${memberId}`);
+const adminNote = noteElement ? noteElement.value.trim() : '';
+
+const { error } = await db
+  .from('member_status')
+  .upsert({
+    user_id: memberId,
+    status: newStatus,
+    admin_note: adminNote,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'user_id' });
+    
+      
+      
+    
 
   if (error) {
     alert('Could not update status: ' + error.message);
