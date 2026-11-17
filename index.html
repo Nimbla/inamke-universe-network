@@ -283,7 +283,8 @@
   placeholder="Search by member name or account ID..."
   style="width:100%;padding:12px;margin:10px 0;border-radius:8px;box-sizing:border-box;"
 >
-  <div id="adminMembers">Loading...</div>
+  <div id="adminMembers">Loading...</div><h3>Member Activity Report</h3>
+<div id="memberActivityReport">Loading report...</div>
   <h3>Recent Sharing Activity</h3>
   <div id="adminActivity">Loading...</div>
 </section>
@@ -372,7 +373,31 @@ memberSearch.addEventListener('input', function () {
       
     
 
-    document.getElementById('adminActivity').innerHTML = activities.length
+    document.getElementById('adminActivity').innerHTML = activities.lengthdocument.getElementById('memberActivityReport').innerHTML = profiles.length
+  ? profiles.map(member => {
+      const memberPoints = points
+        .filter(p => p.user_id === member.id)
+        .reduce((sum, p) => sum + Number(p.points || 0), 0);
+
+      const memberRecords = activities.filter(a => a.user_id === member.id);
+      const verifiedRecords = memberRecords.filter(a => a.verified).length;
+
+      return `
+        <div style="padding:12px;margin:8px 0;background:#222;color:white;border-radius:8px;">
+          <strong>${escapeAdminText(member.display_name || 'Member')}</strong>
+          <p>Joined: ${escapeAdminText(member.created_at || 'Unknown')}</p>
+          <p>Recorded points: ${memberPoints}</p>
+          <p>Sharing records in recent 20: ${memberRecords.length}</p>
+          <p>Verified records in recent 20: ${verifiedRecords}</p>
+          <p>Latest status:
+            ${memberRecords.length
+              ? (memberRecords[0].verified ? 'Verified' : 'Not verified')
+              : 'No recent record'}
+          </p>
+        </div>
+      `;
+    }).join('')
+  : '<p>No member activity found.</p>';
       ? activities.map(item =>
           '<p>Provider: ' + escapeAdminText(item.provider || 'Not set') +
           ' — Verified: ' + (item.verified ? 'Yes' : 'No') +
