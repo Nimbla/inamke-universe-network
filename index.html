@@ -287,6 +287,7 @@
 
       const total = (entries || []).reduce((sum, item) => sum + Number(item.points || 0), 0);
       document.getElementById("points").textContent = String(total);
+document.getElementById("rewardPoints").textContent = String(total);
       dashboardMessage.textContent = "Your account is ready.";
     }
 
