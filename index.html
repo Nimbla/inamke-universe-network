@@ -365,7 +365,11 @@ if (memberStatusError) {
 
         document.getElementById("adminMembers").innerHTML = profiles.length
           ? profiles.map(member => {
-              const memberPoints = points.filter(point => point.user_id === member.id);
+              const memberPoints = points.filter(point => point.user_id === member.id);const memberStatus = memberStatuses.find(
+  item => item.user_id === member.id
+);
+
+const accountStatus = memberStatus ? memberStatus.status : 'pending';
               const totalMemberPoints = memberPoints.reduce(
                 (sum, point) => sum + Number(point.points || 0),
                 0
@@ -379,7 +383,7 @@ if (memberStatusError) {
                     <summary style="cursor:pointer;padding:8px;">View Details</summary>
                     <p>Account ID: ${escapeAdminText(member.id)}</p>
                     <p>Joined: ${escapeAdminText(member.created_at || "Unknown")}</p>
-                    <p>Total points: ${totalMemberPoints}</p>
+                    <p>Total points: ${totalMemberPoints}</p><p>Account status: ${escapeAdminText(accountStatus)}</p>
                     <p>Points records: ${memberPoints.length}</p>
                     <p>Sharing records: ${memberActivity.length}</p>
                   </details>
