@@ -361,19 +361,7 @@ memberSearch.addEventListener('input', function () {
   });
 });
       
-      
-      
-      
-      
-    
-  
-    
-         
-        
-      
-    
-
-    document.getElementById('adminActivity').innerHTML = activities.lengthdocument.getElementById('memberActivityReport').innerHTML = profiles.length
+      document.getElementById('memberActivityReport').innerHTML = profiles.length
   ? profiles.map(member => {
       const memberPoints = points
         .filter(p => p.user_id === member.id)
@@ -389,20 +377,70 @@ memberSearch.addEventListener('input', function () {
           <p>Recorded points: ${memberPoints}</p>
           <p>Sharing records in recent 20: ${memberRecords.length}</p>
           <p>Verified records in recent 20: ${verifiedRecords}</p>
-          <p>Latest status:
-            ${memberRecords.length
+          <p>Latest status: ${
+            memberRecords.length
               ? (memberRecords[0].verified ? 'Verified' : 'Not verified')
-              : 'No recent record'}
-          </p>
+              : 'No recent record'
+          }</p>
         </div>
       `;
     }).join('')
   : '<p>No member activity found.</p>';
+
+document.getElementById('adminActivity').innerHTML = activities.length
+  ? activities.map(item =>
+      '<p>Provider: ' + escapeAdminText(item.provider || 'Not set') +
+      ' — Verified: ' + (item.verified ? 'Yes' : 'No') +
+      ' — Date: ' + escapeAdminText(item.created_at || '') + '</p>'
+    ).join('')
+  : '<p>No sharing activity recorded yet.</p>';
+      
+      
+      
+    
+  
+    
+         
+        
+      
+    
+
+    
+  
+    
+        
+        
+
+      
+      
+
+      
+        
+
+
+
+        
+          
+          
+          
+          
+          
+        
+            
+               
+              
+          
+        
+      
+    
+  
       ? activities.map(item =>
-          '<p>Provider: ' + escapeAdminText(item.provider || 'Not set') +
-          ' — Verified: ' + (item.verified ? 'Yes' : 'No') +
-          ' — Date: ' + escapeAdminText(item.created_at || '') + '</p>'
-        ).join('')
+          t(item.provider || 'Not set') +
+          ' 
+        
+                       
+          
+        
       : '<p>No sharing activity recorded yet.</p>';
 
   } catch (error) {
