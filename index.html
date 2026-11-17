@@ -321,15 +321,37 @@
       '<p>Sharing records: <strong>' + activities.length + '</strong></p>';
 
     document.getElementById('adminMembers').innerHTML = profiles.length
-  ? profiles.map(member =>
-      '<div style="padding:12px;margin:8px 0;background:#222;border-radius:8px;">' +
-      '<strong>' + escapeAdminText(member.display_name || 'Member') + '</strong>' +
-      '<p>Account ID: ' + escapeAdminText(member.id) + '</p>' +
-      '<p>Joined: ' + escapeAdminText(member.created_at || 'Unknown') + '</p>' +
-      '<button onclick="alert(\'Member ID: ' + escapeAdminText(member.id) + '\')">View member ID</button>' +
-      '</div>'
-    ).join('')
+  ? profiles.map(member => {
+      const memberPoints = points.filter(p => p.user_id === member.id);
+      const totalMemberPoints = memberPoints.reduce(
+        (sum, p) => sum + Number(p.points || 0), 0
+      );
+      const memberActivity = activities.filter(a => a.user_id === member.id);
+
+      return `
+        <div style="padding:14px;margin:10px 0;background:#222;border-radius:10px;">
+          <strong>${escapeAdminText(member.display_name || 'Member')}</strong>
+          <details style="margin-top:10px;">
+            <summary style="cursor:pointer;padding:8px;">View Details</summary>
+            <p>Account ID: ${escapeAdminText(member.id)}</p>
+            <p>Joined: ${escapeAdminText(member.created_at || 'Unknown')}</p>
+            <p>Total points: ${totalMemberPoints}</p>
+            <p>Points records: ${memberPoints.length}</p>
+            <p>Sharing records in recent activity: ${memberActivity.length}</p>
+          </details>
+        </div>
+      `;
+    }).join('')
   : '<p>No member profiles found yet.</p>';
+  
+    
+      
+      
+      
+      
+      
+    
+  
     
          
         
