@@ -410,6 +410,14 @@ const accountStatus = memberStatus ? memberStatus.status : 'pending';
   id="note-${member.id}"
   placeholder="Enter admin note or reason..."
   style="width:100%;padding:10px;margin:8px 0;border-radius:8px;box-sizing:border-box;"
+>${escapeAdminText(memberStatus?.admin_note || '')}</textarea><textarea
+  id="note-${member.id}"
+  placeholder="Enter admin note or reason..."
+  style="width:100%;padding:10px;margin:8px 0;border-radius:8px;box-sizing:border-box;"
+>${escapeAdminText(memberStatus?.admin_note || '')}</textarea><textarea
+  id="note-${member.id}"
+  placeholder="Enter admin note or reason..."
+  style="width:100%;padding:10px;margin:8px 0;border-radius:8px;box-sizing:border-box;"
 >${escapeAdminText(memberStatus?.admin_note || '')}</textarea>
 <button onclick="updateMemberStatus('${member.id}')">Save Status</button>
                     <p>Sharing records: ${memberActivity.length}</p>
