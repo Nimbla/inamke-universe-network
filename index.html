@@ -384,7 +384,13 @@ const accountStatus = memberStatus ? memberStatus.status : 'pending';
                     <p>Account ID: ${escapeAdminText(member.id)}</p>
                     <p>Joined: ${escapeAdminText(member.created_at || "Unknown")}</p>
                     <p>Total points: ${totalMemberPoints}</p><p>Account status: ${escapeAdminText(accountStatus)}</p>
-                    <p>Points records: ${memberPoints.length}</p>
+                    <p>Points records: ${memberPoints.length}</p><label>Change account status:</label>
+<select id="status-${member.id}">
+  <option value="active" ${accountStatus === 'active' ? 'selected' : ''}>Active</option>
+  <option value="suspended" ${accountStatus === 'suspended' ? 'selected' : ''}>Suspended</option>
+  <option value="pending" ${accountStatus === 'pending' ? 'selected' : ''}>Pending</option>
+</select>
+<button onclick="updateMemberStatus('${member.id}')">Save Status</button>
                     <p>Sharing records: ${memberActivity.length}</p>
                   </details>
                 </div>
@@ -447,6 +453,43 @@ const accountStatus = memberStatus ? memberStatus.status : 'pending';
         }[char]));
       }
     })();
+window.updateMemberStatus = async function(memberId) {
+  const statusSelect = document.getElementById(`status-${memberId}`);
+  const newStatus = statusSelect.value;
+
+  if (!['active', 'suspended', 'pending'].includes(newStatus)) {
+    alert('Invalid account status.');
+    return;
+  }
+
+  if (!confirm(`Are you sure you want to change this member's status to ${newStatus}?`)) {
+    return;
+  }
+
+  const { data: isAdmin, error: adminError } = await db.rpc('is_admin');
+
+  if (adminError || !isAdmin) {
+    alert('Admin permission required.');
+    return;
+  }
+
+  const { error } = await db
+    .from('member_status')
+    .upsert({
+      user_id: memberId,
+      status: newStatus,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id' });
+
+  if (error) {
+    alert('Could not update status: ' + error.message);
+    return;
+  }
+
+  alert('Member status updated successfully.');
+  location.reload();
+};
+
   </script>
 </body>
 </html>
