@@ -285,7 +285,24 @@
     db.auth.onAuthStateChange(async (event, session) => {
       if (session) {
         if (!dashboardUserId || dashboardUserId !== session.user.id) {
-          await loadDashboard(session.user);
+          const { data: memberStatus, error: statusError } = await db
+  .from('member_status')
+  .select('status')
+  .eq('user_id', session.user.id)
+  .maybeSingle();
+
+if (statusError) {
+  dashboardMessage.textContent = 'Unable to verify account status. Please try again.';
+  return;
+}
+
+if (memberStatus && memberStatus.status === 'suspended') {
+  await db.auth.signOut();
+  alert('Your account has been suspended. Please contact the administrator.');
+  return;
+}
+
+await loadDashboard(session.user);
         }
       } else if (event === "SIGNED_OUT") {
         dashboardUserId = null;
