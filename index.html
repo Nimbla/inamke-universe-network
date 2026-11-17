@@ -3,212 +3,141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inamke Universe Network</title>
   <meta name="description" content="Join Inamke Universe Network, a worldwide internet-sharing and rewards platform.">
+  <title>Inamke Universe Network</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101b16;
+      --surface: #1b2b22;
+      --surface-strong: #102018;
+      --border: #365341;
+      --accent: #a7e6ad;
+      --text: #ffffff;
+      --muted: #c1d0c4;
+    }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 24px 14px;
-      font-family: Arial, sans-serif;
-      background: #101b16;
-      color: #fff;
-    }
-    .container {
-      max-width: 440px;
-      margin: 30px auto;
-      background: #1b2b22;
-      padding: 26px;
-      border-radius: 18px;
-      border: 1px solid #365341;
-    }
-    h1 { text-align: center; color: #a7e6ad; font-size: 25px; }
+    body { margin: 0; padding: 24px 14px; font-family: Arial, sans-serif; background: var(--bg); color: var(--text); }
+    .container { max-width: 560px; margin: 30px auto; background: var(--surface); padding: 26px; border-radius: 18px; border: 1px solid var(--border); }
+    h1 { text-align: center; color: var(--accent); font-size: 25px; }
     h2 { text-align: center; font-size: 21px; }
+    h3 { margin-top: 0; }
     p { color: #d0ded3; line-height: 1.6; }
-    input, button {
-      width: 100%;
-      padding: 14px;
-      margin: 8px 0;
-      border-radius: 9px;
-      font-size: 16px;
-    }
-    input {
-      border: 1px solid #55715d;
-      background: #102018;
-      color: white;
-    }
-    button {
-      border: 0;
-      background: #a7e6ad;
-      color: #102018;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button.secondary {
-      background: #304b39;
-      color: white;
-    }
-    .switch {
-      text-align: center;
-      margin-top: 16px;
-      color: #a7e6ad;
-      cursor: pointer;
-    }
-    .small { font-size: 12px; color: #b9c9bd; }
-    #message { margin-top: 12px; overflow-wrap: anywhere; }
-    .hidden { display: none; }
-    .balance {
-      background: #102018;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      margin: 20px 0;
-    }
-    .points { font-size: 34px; color: #a7e6ad; font-weight: bold; }
+    input, button, textarea, select { width: 100%; padding: 14px; margin: 8px 0; border-radius: 9px; font-size: 16px; }
+    input, textarea, select { border: 1px solid #55715d; background: var(--surface-strong); color: white; }
+    button { border: 0; background: var(--accent); color: #102018; font-weight: bold; cursor: pointer; }
+    button:disabled { cursor: wait; opacity: .65; }
+    button.secondary { background: #304b39; color: white; }
+    .switch { text-align: center; margin-top: 16px; color: var(--accent); cursor: pointer; }
+    .small { font-size: 12px; color: var(--muted); }
+    #message, #dashboardMessage { margin-top: 12px; overflow-wrap: anywhere; }
+    .hidden { display: none !important; }
+    .card { background: var(--surface-strong); border-radius: 12px; padding: 20px; text-align: center; margin: 20px 0; }
+    .points { font-size: 34px; color: var(--accent); font-weight: bold; }
+    .admin { display: none; max-width: 900px; margin: 20px auto; padding: 20px; background: #111; border-radius: 12px; }
+    .member-card, .report-card { padding: 14px; margin: 10px 0; background: #222; border-radius: 10px; }
+    details { text-align: left; }
+    summary { cursor: pointer; padding: 8px; }
+    a { color: var(--accent); }
+    .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+    .status-grid p { padding: 10px; background: #222; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <div class="container">
+  <main class="container">
     <h1>INAMKE UNIVERSE NETWORK</h1>
     <p style="text-align:center;">One Nature. One Humanity. One Universe.</p>
 
     <section id="authSection">
       <h2 id="formTitle">Create Your Account</h2>
       <p style="text-align:center;">Join our worldwide community.</p>
-
       <form id="authForm">
         <input id="name" type="text" placeholder="Your name" autocomplete="name" required>
-        <input id="email" type="email" placeholder="Email address" required autocomplete="email">
-        <input id="password" type="password" placeholder="Password (minimum 6 characters)" required minlength="6" autocomplete="new-password">
+        <input id="email" type="email" placeholder="Email address" autocomplete="email" required>
+        <input id="password" type="password" placeholder="Password (minimum 6 characters)" minlength="6" autocomplete="new-password" required>
         <button id="submitButton" type="submit">Create Account</button>
       </form>
-
       <button class="secondary" id="googleButton" type="button">Continue with Google</button>
-      <p class="switch" id="switchMode">Already have an account? Log in</p>
+      <p class="switch" id="switchMode" role="button" tabindex="0">Already have an account? Log in</p>
       <p id="message" role="status" aria-live="polite"></p>
     </section>
 
     <section id="dashboard" class="hidden">
       <h2>Welcome to Your Inamke Universe Dashboard</h2>
-<p class="small">Your personal space to manage your membership, view points and track platform activity.</p>
-      
-<div class="balance" style="margin-top:15px;">
-  <h3>My Account</h3>
-  <p id="welcome"></p>
-  <p><strong>Membership:</strong> Inamke Universe Network Member</p>
-  <p><strong>Account security:</strong> Protected login</p>
-</div>
-      <div class="balance">
+      <p class="small">Your personal space to manage membership, view points, and track platform activity.</p>
+
+      <div class="card">
+        <h3>My Account</h3>
+        <p id="welcome"></p>
+        <p><strong>Membership:</strong> Inamke Universe Network Member</p>
+        <p><strong>Account security:</strong> Protected login</p>
+      </div>
+
+      <div class="card">
         <p>Your verified points</p>
         <div class="points" id="points">0</div>
         <p class="small">Points are displayed from recorded activity.</p>
       </div>
 
-      <div class="balance" style="margin-top:20px;">
-  <h3>Platform Activity</h3><div class="balance" style="margin-top:20px;">
-  <h3>My Activity History</h3>
-  <div id="memberActivity">
-    Loading activity...
-  </div>
-</div>
-  <p><strong>Membership:</strong> Active platform registration</p>
-  <p><strong>Internet sharing:</strong> Not active yet</p>
-  <p><strong>Points system:</strong> Recording status only</p>
-  <p><strong>Withdrawals:</strong> Not available yet</p>
-  <p class="small">New platform features will be announced when they become available.</p>
-</div>
-      <p>We will only enable bandwidth sharing through an approved provider, with your permission.</p>
+      <div class="card">
+        <h3>My Activity History</h3>
+        <div id="memberActivity">Loading activity...</div>
+      </div>
 
-      <button class="secondary" id="logoutButton" type="button">Log Out</button><div class="balance" style="margin-top:20px;"><div class="balance" style="margin-top:20px;">
-  <h3>Terms & Conditions</h3><div class="balance" style="margin-top:20px;">
-  <h3>Privacy Policy</h3><div class="balance" style="margin-top:20px;">
-  <h3>Contact & Support</h3>
+      <div class="card">
+        <h3>Platform Status</h3>
+        <p><strong>Membership:</strong> Active platform registration</p>
+        <p><strong>Internet sharing:</strong> Not active yet</p>
+        <p><strong>Points system:</strong> Recording status only</p>
+        <p><strong>Withdrawals:</strong> Not available yet</p>
+        <p>Bandwidth sharing will only be enabled through an approved provider, with your permission.</p>
+      </div>
 
-  <p>Need help with your Inamke Universe Network account? Contact our support team.</p>
+      <div class="card">
+        <h3>Rewards Overview</h3>
+        <p><strong>Current points:</strong> <span id="rewardPoints">0</span></p>
+        <p><strong>Withdrawal status:</strong> Not available yet</p>
+        <p class="small">Points are not currently redeemable for cash.</p>
+      </div>
 
-  <p><strong>Support Email:</strong>
-    <a href="mailto:inamkeuniverse@gmail.com">inamkeuniverse@gmail.com</a>
-  </p>
+      <div class="card">
+        <h3>Payout Account</h3>
+        <p>Payment account setup is coming soon.</p>
+        <p class="small">Payout status: Not available yet</p>
+      </div>
 
-  <p>For account issues, include your account ID and a clear description of the problem.</p>
-</div>
+      <div class="card">
+        <h3>Terms &amp; Conditions</h3>
+        <p>By creating an account, you agree to these terms. Internet sharing is not active. Points have no cash value and cannot be withdrawn. Earnings are not guaranteed. Misuse may result in suspension.</p>
+      </div>
 
-  <p>Inamke Universe Network respects your privacy and is committed to protecting your personal information.</p>
+      <div class="card">
+        <h3>Privacy Policy</h3>
+        <p>We collect the display name, email address, account ID, points records, and platform activity needed to operate the account. Supabase and Google sign-in may process information according to their privacy policies. We do not sell personal information.</p>
+        <p class="small">Review this draft policy before an official launch.</p>
+      </div>
 
-  <p><strong>1. Information We Collect:</strong> We may collect your display name, email address, account ID, points records, and platform activity.</p>
+      <div class="card">
+        <h3>Contact &amp; Support</h3>
+        <p>Need help with your account? <a href="mailto:inamkeuniverse@gmail.com">inamkeuniverse@gmail.com</a></p>
+      </div>
 
-  <p><strong>2. How We Use Information:</strong> We use this information to manage accounts, display dashboards, record points, maintain security, and improve our services.</p>
-
-  <p><strong>3. Third-Party Services:</strong> We use Supabase for authentication and database services. Google sign-in may also process information according to Google's privacy policy.</p>
-
-  <p><strong>4. Information Sharing:</strong> We do not sell your personal information. Information may be shared with service providers when necessary to operate the platform or when legally required.</p>
-
-  <p><strong>5. Data Security:</strong> We take reasonable steps to protect account information, but no online system can guarantee absolute security.</p>
-
-  <p><strong>6. Your Choices:</strong> You should contact the platform administrator for questions about your information or requests concerning your account.</p>
-
-  <p><strong>7. Future Services:</strong> If bandwidth sharing or payment services are introduced, we will explain what additional information is needed before you choose to participate.</p>
-
-  <p class="small">This is a draft privacy policy. It must be reviewed and updated before the platform officially launches.</p>
-</div>
-
-  <p>Welcome to Inamke Universe Network. By creating an account, you agree to these terms.</p>
-
-  <p><strong>1. Membership:</strong> You must provide accurate information and keep your account secure.</p>
-
-  <p><strong>2. Internet Sharing:</strong> Internet bandwidth sharing is not active yet. It will only be introduced through an approved provider, with your clear permission.</p>
-
-  <p><strong>3. Points and Rewards:</strong> Points are currently records of platform activity. They have no cash value and cannot be withdrawn or exchanged for money at this time.</p>
-
-  <p><strong>4. Earnings:</strong> We do not guarantee earnings, rewards, or payments.</p>
-
-  <p><strong>5. Account Safety:</strong> Misuse, fraud, or activities that harm the platform may result in account restrictions or suspension.</p>
-
-  <p><strong>6. Changes:</strong> These terms may be updated as the platform develops. Important changes will be communicated to members.</p>
-
-  <p class="small">These terms are a draft and may be updated before the platform officially launches.</p>
-</div>
-  <h3>Payout Account</h3>
-  <p>Payment account setup is coming soon.</p>
-  <p class="small">You will be able to add an approved payout method when withdrawals become available.</p>
-  <p><strong>Payout status:</strong> Not available yet</p>
-</div>
-
-<div class="balance" style="margin-top:20px;">
-  <h3>Rewards Overview</h3>
-  <p><strong>Current points:</strong> <span id="rewardPoints">0</span></p>
-  <p><strong>Withdrawal status:</strong> Not available yet</p>
-  <p class="small">Points are not currently redeemable for cash.</p>
-</div>
-
-<div class="balance" style="margin-top:20px;">
-  <h3>Account Services</h3>
-  <p>Manage your membership and review platform information.</p>
-  <p><strong>Bandwidth sharing:</strong> Coming soon</p>
-  <p><strong>Rewards:</strong> Coming soon</p>
-</div>
+      <button class="secondary" id="logoutButton" type="button">Log Out</button>
       <p id="dashboardMessage" role="status" aria-live="polite"></p>
     </section>
 
     <p class="small" style="text-align:center;margin-top:25px;">
-      Your account information is protected by database access controls.
       Bandwidth sharing and rewards are not yet active.
     </p>
-  </div>
+  </main>
 
-  <section id="adminPanel" style="display:none; padding:20px; margin:20px auto; max-width:900px; background:#111; color:white; border-radius:12px;">
+  <section id="adminPanel" class="admin">
     <h2>Inamke Universe Network — Admin Dashboard</h2>
     <p id="adminStatus" role="status" aria-live="polite">Checking administrator access...</p>
     <div id="adminStats"></div>
     <h3>Registered Members</h3>
-    <input
-      type="search"
-      id="memberSearch"
-      placeholder="Search by member name or account ID..."
-      aria-label="Search members by name or account ID"
-      style="width:100%;padding:12px;margin:10px 0;border-radius:8px;box-sizing:border-box;"
-    >
+    <input type="search" id="memberSearch" placeholder="Search by member name or account ID" aria-label="Search members by name or account ID">
     <div id="adminMembers">Loading...</div>
     <h3>Member Activity Report</h3>
     <div id="memberActivityReport">Loading report...</div>
@@ -219,8 +148,13 @@
   <script>
     const SUPABASE_URL = "https://dhyaqpiucpymbgbmparj.supabase.co";
     const SUPABASE_KEY = "sb_publishable_-SwxOicj2jIXaZsZnknT5w_sStDzE2Y";
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    if (!window.supabase) {
+      document.getElementById("message").textContent = "Unable to load the authentication service. Please check your internet connection.";
+      throw new Error("Supabase client library failed to load");
+    }
+
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const authSection = document.getElementById("authSection");
     const dashboard = document.getElementById("dashboard");
     const form = document.getElementById("authForm");
@@ -230,32 +164,40 @@
     let loginMode = false;
     let dashboardUserId = null;
 
-    function showMessage(text) {
-      message.textContent = text;
+    function escapeText(value) {
+      const element = document.createElement("span");
+      element.textContent = value == null ? "" : String(value);
+      return element.innerHTML;
     }
+
+    function showMessage(text) { message.textContent = text; }
 
     function setLoginMode(value) {
       loginMode = value;
-      document.getElementById("formTitle").textContent =
-        loginMode ? "Welcome Back" : "Create Your Account";
-      document.getElementById("submitButton").textContent =
-        loginMode ? "Log In" : "Create Account";
+      document.getElementById("formTitle").textContent = loginMode ? "Welcome Back" : "Create Your Account";
+      document.getElementById("submitButton").textContent = loginMode ? "Log In" : "Create Account";
       const nameInput = document.getElementById("name");
       nameInput.classList.toggle("hidden", loginMode);
       nameInput.required = !loginMode;
-      document.getElementById("password").autocomplete =
-        loginMode ? "current-password" : "new-password";
-      document.getElementById("switchMode").textContent =
-        loginMode ? "Need an account? Sign up" : "Already have an account? Log in";
+      document.getElementById("password").autocomplete = loginMode ? "current-password" : "new-password";
+      document.getElementById("switchMode").textContent = loginMode ? "Need an account? Sign up" : "Already have an account? Log in";
       showMessage("");
     }
 
-    document.getElementById("switchMode").addEventListener("click", () => {
-      setLoginMode(!loginMode);
+    function toggleSwitchMode() { setLoginMode(!loginMode); }
+
+    document.getElementById("switchMode").addEventListener("click", toggleSwitchMode);
+    document.getElementById("switchMode").addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.prevent.preventDefault();
+        toggleSwitchMode();
+      }
     });
 
-    form.addEventListener("submit", async (event) => {
+    form.addEventListener("submit", async event => {
       event.preventDefault();
+      const submitButton = document.getElementById("submitButton");
+      submitButton.disabled = true;
       showMessage("Please wait...");
 
       const email = document.getElementById("email").value.trim();
@@ -276,15 +218,14 @@
             }
           });
           if (error) throw error;
-
-          if (!data.session) {
-            showMessage("Account created! Check your email to confirm your account, then log in.");
-          } else {
-            showMessage("Account created successfully!");
-          }
+          showMessage(data.session
+            ? "Account created successfully!"
+            : "Account created! Check your email to confirm your account, then log in.");
         }
       } catch (error) {
         showMessage(error.message || "Authentication failed. Please try again.");
+      } finally {
+        submitButton.disabled = false;
       }
     });
 
@@ -293,9 +234,7 @@
       try {
         const { error } = await db.auth.signInWithOAuth({
           provider: "google",
-          options: {
-            redirectTo: window.location.origin + window.location.pathname
-          }
+          options: { redirectTo: window.location.origin + window.location.pathname }
         });
         if (error) throw error;
       } catch (error) {
@@ -304,27 +243,15 @@
     });
 
     async function loadDashboard(user) {
-      if (!user || !user.id) return;
-
-      if (dashboardUserId && dashboardUserId !== user.id) {
-        dashboardUserId = user.id;
-      } else if (!dashboardUserId) {
-        dashboardUserId = user.id;
-      }
-
+      if (!user?.id) return;
+      dashboardUserId = user.id;
       authSection.classList.add("hidden");
       dashboard.classList.remove("hidden");
       dashboardMessage.textContent = "Loading your account...";
-
-      document.getElementById("welcome").textContent =
-        "Hello, " + (user.user_metadata?.display_name || user.email || "Member");
+      document.getElementById("welcome").textContent = "Hello, " + (user.user_metadata?.display_name || user.email || "Member");
 
       const { data: profile, error: profileError } = await db
-        .from("profiles")
-        .select("id, display_name")
-        .eq("id", user.id)
-        .maybeSingle();
-
+        .from("profiles").select("id, display_name").eq("id", user.id).maybeSingle();
       if (profileError) {
         dashboardMessage.textContent = "Could not load your profile: " + profileError.message;
         return;
@@ -341,10 +268,10 @@
         }
       }
 
-      const { data: entries, error: pointsError } = await db
-        .from("points_ledger")
-        .select("points")
-        .eq("user_id", user.id);
+      const [{ data: entries, error: pointsError }, { data: activity, error: activityError }] = await Promise.all([
+        db.from("points_ledger").select("points").eq("user_id", user.id),
+        db.from("sharing_activity").select("provider, verified, created_at").eq("user_id", user.id).order("created_at", { ascending: false })
+      ]);
 
       if (pointsError) {
         dashboardMessage.textContent = "Could not load points: " + pointsError.message;
@@ -353,64 +280,42 @@
 
       const total = (entries || []).reduce((sum, item) => sum + Number(item.points || 0), 0);
       document.getElementById("points").textContent = String(total);
-document.getElementById("rewardPoints").textContent = String(total);
+      document.getElementById("rewardPoints").textContent = String(total);
+
+      const activityList = document.getElementById("memberActivity");
+      if (activityError) {
+        activityList.textContent = "Unable to load activity history.";
+      } else if (!activity?.length) {
+        activityList.textContent = "No recorded activity yet.";
+      } else {
+        activityList.innerHTML = activity.map(item =>
+          `<p>${escapeText(item.provider || "Platform activity")} — ${item.verified ? "Verified" : "Not verified"} — ${escapeText(new Date(item.created_at).toLocaleString())}</p>`
+        ).join("");
+      }
       dashboardMessage.textContent = "Your account is ready.";
-    }const { data: myActivity, error: activityError } = await db
-  .from("sharing_activity")
-  .select("provider, verified, created_at")
-  .eq("user_id", user.id)
-  .order("created_at", { ascending: false });
-
-const activityList = document.getElementById("memberActivity");
-
-if (activityList) {
-  if (activityError) {
-    activityList.textContent = "Unable to load activity history.";
-  } else if (!myActivity || myActivity.length === 0) {
-    activityList.textContent = "No recorded activity yet.";
-  } else {
-    activityList.innerHTML = myActivity.map(item => `
-      <p>
-        ${item.provider || "Platform activity"} —
-        ${item.verified ? "Verified" : "Not verified"} —
-        ${new Date(item.created_at).toLocaleString()}
-      </p>
-    `).join("");
-  }
-}
+    }
 
     async function checkSession() {
       const { data, error } = await db.auth.getSession();
-      if (error) {
-        showMessage(error.message);
-        return;
-      }
-      if (data.session) {
-        await loadDashboard(data.session.user);
-      }
+      if (error) { showMessage(error.message); return; }
+      if (data.session) await loadDashboard(data.session.user);
     }
 
     db.auth.onAuthStateChange(async (event, session) => {
       if (session) {
-        if (!dashboardUserId || dashboardUserId !== session.user.id) {
+        if (dashboardUserId !== session.user.id) {
           const { data: memberStatus, error: statusError } = await db
-  .from('member_status')
-  .select('status')
-  .eq('user_id', session.user.id)
-  .maybeSingle();
-
-if (statusError) {
-  dashboardMessage.textContent = 'Unable to verify account status. Please try again.';
-  return;
-}
-
-if (memberStatus && memberStatus.status === 'suspended') {
-  await db.auth.signOut();
-  alert('Your account has been suspended. Please contact the administrator.');
-  return;
-}
-
-await loadDashboard(session.user);
+            .from("member_status").select("status").eq("user_id", session.user.id).maybeSingle();
+          if (statusError) {
+            dashboardMessage.textContent = "Unable to verify account status. Please try again.";
+            return;
+          }
+          if (memberStatus?.status === "suspended") {
+            await db.auth.signOut();
+            showMessage("Your account has been suspended. Please contact the administrator.");
+            return;
+          }
+          await loadDashboard(session.user);
         }
       } else if (event === "SIGNED_OUT") {
         dashboardUserId = null;
@@ -426,19 +331,11 @@ await loadDashboard(session.user);
       if (error) dashboardMessage.textContent = error.message;
     });
 
-    checkSession();
-  </script>
-
-  <script>
-    (async function () {
+    async function loadAdminPanel() {
       const panel = document.getElementById("adminPanel");
       const status = document.getElementById("adminStatus");
-      const adminStats = document.getElementById("adminStats");
-      const memberSearch = document.getElementById("memberSearch");
-
       try {
         const { data: isAdmin, error: adminError } = await db.rpc("is_admin");
-
         if (adminError || !isAdmin) {
           status.textContent = "Administrator access only.";
           return;
@@ -446,23 +343,14 @@ await loadDashboard(session.user);
 
         panel.style.display = "block";
         status.textContent = "Administrator access verified.";
-
-        const [profilesResult, pointsResult, activityResult] = await Promise.all([
+        const [profilesResult, pointsResult, activityResult, statusesResult] = await Promise.all([
           db.from("profiles").select("id, display_name, created_at"),
           db.from("points_ledger").select("user_id, points"),
-          db.from("sharing_activity")
-            .select("user_id, provider, verified, created_at")
-            .order("created_at", { ascending: false })
-        ]);const { data: memberStatuses, error: memberStatusError } = await db
-  .from('member_status')
-  .select('user_id, status, admin_note, updated_at');
+          db.from("sharing_activity").select("user_id, provider, verified, created_at").order("created_at", { ascending: false }),
+          db.from("member_status").select("user_id, status, admin_note, updated_at")
+        ]);
 
-if (memberStatusError) {
-  status.textContent = 'Could not load member statuses.';
-  return;
-}
-
-        if (profilesResult.error || pointsResult.error || activityResult.error) {
+        if ([profilesResult, pointsResult, activityResult, statusesResult].some(result => result.error)) {
           status.textContent = "Access verified, but some dashboard data could not load. Check database policies.";
           return;
         }
@@ -470,173 +358,109 @@ if (memberStatusError) {
         const profiles = profilesResult.data || [];
         const points = pointsResult.data || [];
         const activities = activityResult.data || [];
+        const memberStatuses = statusesResult.data || [];
         const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
         const today = new Date().toISOString().slice(0, 10);
-        const todayRegistrations = profiles.filter(member =>
-          member.created_at && member.created_at.slice(0, 10) === today
-        ).length;
-        const todayActivities = activities.filter(item =>
-          item.created_at && item.created_at.slice(0, 10) === today
-        );
-        const verifiedToday = todayActivities.filter(item => item.verified).length;
+        const todayRegistrations = profiles.filter(member => member.created_at?.slice(0, 10) === today).length;
+        const todayActivities = activities.filter(item => item.created_at?.slice(0, 10) === today);
 
-        adminStats.innerHTML =
-          "<p>Registered members: <strong>" + profiles.length + "</strong></p>" +
-          "<p>Total points recorded: <strong>" + totalPoints + "</strong></p>" +
-          "<p>Recent sharing records: <strong>" + activities.length + "</strong></p>" +
-          "<p>Today's registrations: <strong>" + todayRegistrations + "</strong></p>" +
-          "<p>Today's sharing records: <strong>" + todayActivities.length + "</strong></p>" +
-          "<p>Verified activity today: <strong>" + verifiedToday + "</strong></p>";
+        document.getElementById("adminStats").innerHTML = `<div class="status-grid">
+          <p>Registered members: <strong>${profiles.length}</strong></p>
+          <p>Total points recorded: <strong>${totalPoints}</strong></p>
+          <p>Recent sharing records: <strong>${activities.length}</strong></p>
+          <p>Today's registrations: <strong>${todayRegistrations}</strong></p>
+          <p>Today's sharing records: <strong>${todayActivities.length}</strong></p>
+          <p>Verified activity today: <strong>${todayActivities.filter(item => item.verified).length}</strong></p>
+        </div>`;
 
         document.getElementById("adminMembers").innerHTML = profiles.length
           ? profiles.map(member => {
-              const memberPoints = points.filter(point => point.user_id === member.id);const memberStatus = memberStatuses.find(
-  item => item.user_id === member.id
-);
-
-const accountStatus = memberStatus ? memberStatus.status : 'pending';
-              const totalMemberPoints = memberPoints.reduce(
-                (sum, point) => sum + Number(point.points || 0),
-                0
-              );
+              const memberPoints = points.filter(point => point.user_id === member.id);
+              const memberStatus = memberStatuses.find(item => item.user_id === member.id);
+              const accountStatus = memberStatus?.status || "pending";
+              const totalMemberPoints = memberPoints.reduce((sum, point) => sum + Number(point.points || 0), 0);
               const memberActivity = activities.filter(activity => activity.user_id === member.id);
-
-              return `
-                <div style="padding:14px;margin:10px 0;background:#222;border-radius:10px;">
-                  <strong>${escapeAdminText(member.display_name || "Member")}</strong>
-                  <details style="margin-top:10px;">
-                    <summary style="cursor:pointer;padding:8px;">View Details</summary>
-                    <p>Account ID: ${escapeAdminText(member.id)}</p>
-                    <p>Joined: ${escapeAdminText(member.created_at || "Unknown")}</p>
-                    <p>Total points: ${totalMemberPoints}</p><p>Account status: ${escapeAdminText(accountStatus)}</p>
-                    <p>Points records: ${memberPoints.length}</p><label>Change account status:</label>
-<select id="status-${member.id}">
-  <option value="active" ${accountStatus === 'active' ? 'selected' : ''}>Active</option>
-  <option value="suspended" ${accountStatus === 'suspended' ? 'selected' : ''}>Suspended</option>
-  <option value="pending" ${accountStatus === 'pending' ? 'selected' : ''}>Pending</option>
-</select><textarea
-  id="note-${member.id}"
-  placeholder="Enter admin note or reason..."
-  style="width:100%;padding:10px;margin:8px 0;border-radius:8px;box-sizing:border-box;"
->${escapeAdminText(memberStatus?.admin_note || '')}</textarea><textarea
-  id="note-${member.id}"
-  placeholder="Enter admin note or reason..."
-  style="width:100%;padding:10px;margin:8px 0;border-radius:8px;box-sizing:border-box;"
->${escapeAdminText(memberStatus?.admin_note || '')}</textarea><textarea
-  id="note-${member.id}"
-  placeholder="Enter admin note or reason..."
-  style="width:100%;padding:10px;margin:8px 0;border-radius:8px;box-sizing:border-box;"
->${escapeAdminText(memberStatus?.admin_note || '')}</textarea>
-<button onclick="updateMemberStatus('${member.id}')">Save Status</button>
-                    <p>Sharing records: ${memberActivity.length}</p>
-                  </details>
-                </div>
-              `;
+              return `<div class="member-card">
+                <strong>${escapeText(member.display_name || "Member")}</strong>
+                <details><summary>View Details</summary>
+                  <p>Account ID: ${escapeText(member.id)}</p>
+                  <p>Joined: ${escapeText(member.created_at || "Unknown")}</p>
+                  <p>Total points: ${totalMemberPoints}</p>
+                  <p>Account status: ${escapeText(accountStatus)}</p>
+                  <label for="status-${escapeText(member.id)}">Change account status:</label>
+                  <select id="status-${escapeText(member.id)}">
+                    <option value="active" ${accountStatus === "active" ? "selected" : ""}>Active</option>
+                    <option value="suspended" ${accountStatus === "suspended" ? "selected" : ""}>Suspended</option>
+                    <option value="pending" ${accountStatus === "pending" ? "selected" : ""}>Pending</option>
+                  </select>
+                  <label for="note-${escapeText(member.id)}">Admin note:</label>
+                  <textarea id="note-${escapeText(member.id)}">${escapeText(memberStatus?.admin_note || "")}</textarea>
+                  <button type="button" onclick="updateMemberStatus(${JSON.stringify(member.id)})">Save Status</button>
+                  <p>Sharing records: ${memberActivity.length}</p>
+                </details>
+              </div>`;
             }).join("")
           : "<p>No member profiles found yet.</p>";
 
-        memberSearch.addEventListener("input", function () {
-          const searchTerm = this.value.toLowerCase().trim();
-          document.querySelectorAll("#adminMembers > div").forEach(card => {
-            const memberText = card.textContent.toLowerCase();
-            card.style.display = memberText.includes(searchTerm) ? "block" : "none";
-          });
-        });
-
         document.getElementById("memberActivityReport").innerHTML = profiles.length
           ? profiles.map(member => {
-              const memberPoints = points
-                .filter(point => point.user_id === member.id)
-                .reduce((sum, point) => sum + Number(point.points || 0), 0);
+              const memberPoints = points.filter(point => point.user_id === member.id).reduce((sum, point) => sum + Number(point.points || 0), 0);
               const memberRecords = activities.filter(activity => activity.user_id === member.id);
-              const verifiedRecords = memberRecords.filter(activity => activity.verified).length;
-
-              return `
-                <div style="padding:12px;margin:8px 0;background:#222;color:white;border-radius:8px;">
-                  <strong>${escapeAdminText(member.display_name || "Member")}</strong>
-                  <p>Joined: ${escapeAdminText(member.created_at || "Unknown")}</p>
-                  <p>Recorded points: ${memberPoints}</p>
-                  <p>Sharing records: ${memberRecords.length}</p>
-                  <p>Verified records: ${verifiedRecords}</p>
-                  <p>Latest status: ${
-                    memberRecords.length
-                      ? (memberRecords[0].verified ? "Verified" : "Not verified")
-                      : "No recent record"
-                  }</p>
-                </div>
-              `;
+              const latestStatus = memberRecords.length ? (memberRecords[0].verified ? "Verified" : "Not verified") : "No recent record";
+              return `<div class="report-card">
+                <strong>${escapeText(member.display_name || "Member")}</strong>
+                <p>Joined: ${escapeText(member.created_at || "Unknown")}</p>
+                <p>Recorded points: ${memberPoints}</p>
+                <p>Sharing records: ${memberRecords.length}</p>
+                <p>Verified records: ${memberRecords.filter(activity => activity.verified).length}</p>
+                <p>Latest status: ${escapeText(latestStatus)}</p>
+              </div>`;
             }).join("")
           : "<p>No member activity found.</p>";
 
         document.getElementById("adminActivity").innerHTML = activities.length
-          ? activities.map(item =>
-              "<p>Provider: " + escapeAdminText(item.provider || "Not set") +
-              " — Verified: " + (item.verified ? "Yes" : "No") +
-              " — Date: " + escapeAdminText(item.created_at || "") + "</p>"
-            ).join("")
+          ? activities.map(item => `<p>Provider: ${escapeText(item.provider || "Not set")} — Verified: ${item.verified ? "Yes" : "No"} — Date: ${escapeText(item.created_at || "")}</p>`).join("")
           : "<p>No sharing activity recorded yet.</p>";
+
+        document.getElementById("memberSearch").addEventListener("input", function () {
+          const term = this.value.toLowerCase().trim();
+          document.querySelectorAll("#adminMembers > div").forEach(card => {
+            card.style.display = card.textContent.toLowerCase().includes(term) ? "block" : "none";
+          });
+        });
       } catch (error) {
         console.error(error);
-        status.textContent = "Could not load admin dashboard. Please check your connection.";
+        status.textContent = "Could not load the admin dashboard. Please check your connection.";
       }
+    }
 
-      function escapeAdminText(value) {
-        return String(value).replace(/[&<>\"']/g, char => ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;"
-        }[char]));
+    window.updateMemberStatus = async function(memberId) {
+      const statusSelect = document.getElementById(`status-${memberId}`);
+      const noteElement = document.getElementById(`note-${memberId}`);
+      const newStatus = statusSelect?.value;
+      if (!["active", "suspended", "pending"].includes(newStatus)) {
+        alert("Invalid account status.");
+        return;
       }
-    })();
-window.updateMemberStatus = async function(memberId) {
-  const statusSelect = document.getElementById(`status-${memberId}`);
-  const newStatus = statusSelect.value;
+      if (!confirm(`Change this member's status to ${newStatus}?`)) return;
 
-  if (!['active', 'suspended', 'pending'].includes(newStatus)) {
-    alert('Invalid account status.');
-    return;
-  }
+      const { data: isAdmin, error: adminError } = await db.rpc("is_admin");
+      if (adminError || !isAdmin) { alert("Admin permission required."); return; }
 
-  if (!confirm(`Are you sure you want to change this member's status to ${newStatus}?`)) {
-    return;
-  }
+      const { error } = await db.from("member_status").upsert({
+        user_id: memberId,
+        status: newStatus,
+        admin_note: noteElement?.value.trim() || "",
+        updated_at: new Date().toISOString()
+      }, { onConflict: "user_id" });
 
-  const { data: isAdmin, error: adminError } = await db.rpc('is_admin');
+      if (error) { alert("Could not update status: " + error.message); return; }
+      alert("Member status updated successfully.");
+      window.location.reload();
+    };
 
-  if (adminError || !isAdmin) {
-    alert('Admin permission required.');
-    return;
-  }
-
-  const { error } = await db
-    .from('member_status')
-    const noteElement = document.getElementById(`note-${memberId}`);
-const adminNote = noteElement ? noteElement.value.trim() : '';
-
-const { error } = await db
-  .from('member_status')
-  .upsert({
-    user_id: memberId,
-    status: newStatus,
-    admin_note: adminNote,
-    updated_at: new Date().toISOString()
-  }, { onConflict: 'user_id' });
-    
-      
-      
-    
-
-  if (error) {
-    alert('Could not update status: ' + error.message);
-    return;
-  }
-
-  alert('Member status updated successfully.');
-  location.reload();
-};
-
+    checkSession();
+    loadAdminPanel();
   </script>
 </body>
 </html>
