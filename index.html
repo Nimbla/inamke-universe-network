@@ -350,7 +350,29 @@
       document.getElementById("points").textContent = String(total);
 document.getElementById("rewardPoints").textContent = String(total);
       dashboardMessage.textContent = "Your account is ready.";
-    }
+    }const { data: myActivity, error: activityError } = await db
+  .from("sharing_activity")
+  .select("provider, verified, created_at")
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false });
+
+const activityList = document.getElementById("memberActivity");
+
+if (activityList) {
+  if (activityError) {
+    activityList.textContent = "Unable to load activity history.";
+  } else if (!myActivity || myActivity.length === 0) {
+    activityList.textContent = "No recorded activity yet.";
+  } else {
+    activityList.innerHTML = myActivity.map(item => `
+      <p>
+        ${item.provider || "Platform activity"} —
+        ${item.verified ? "Verified" : "Not verified"} —
+        ${new Date(item.created_at).toLocaleString()}
+      </p>
+    `).join("");
+  }
+}
 
     async function checkSession() {
       const { data, error } = await db.auth.getSession();
