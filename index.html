@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,7 +69,6 @@
   </style>
 </head>
 <body>
-
   <div class="container">
     <h1>INAMKE UNIVERSE NETWORK</h1>
     <p style="text-align:center;">One Nature. One Humanity. One Universe.</p>
@@ -81,18 +78,15 @@
       <p style="text-align:center;">Join our worldwide community.</p>
 
       <form id="authForm">
-        <input id="name" type="text" placeholder="Your name" autocomplete="name">
+        <input id="name" type="text" placeholder="Your name" autocomplete="name" required>
         <input id="email" type="email" placeholder="Email address" required autocomplete="email">
         <input id="password" type="password" placeholder="Password (minimum 6 characters)" required minlength="6" autocomplete="new-password">
         <button id="submitButton" type="submit">Create Account</button>
       </form>
 
-      <button class="secondary" id="googleButton" type="button">
-        Continue with Google
-      </button>
-
+      <button class="secondary" id="googleButton" type="button">Continue with Google</button>
       <p class="switch" id="switchMode">Already have an account? Log in</p>
-      <p id="message" role="status"></p>
+      <p id="message" role="status" aria-live="polite"></p>
     </section>
 
     <section id="dashboard" class="hidden">
@@ -108,8 +102,8 @@
       <p><strong>Internet sharing:</strong> Not active yet.</p>
       <p>We will only enable bandwidth sharing through an approved provider, with your permission.</p>
 
-      <button class="secondary" id="logoutButton">Log Out</button>
-      <p id="dashboardMessage" role="status"></p>
+      <button class="secondary" id="logoutButton" type="button">Log Out</button>
+      <p id="dashboardMessage" role="status" aria-live="polite"></p>
     </section>
 
     <p class="small" style="text-align:center;margin-top:25px;">
@@ -118,341 +112,303 @@
     </p>
   </div>
 
-<script>
-  const SUPABASE_URL = "https://dhyaqpiucpymbgbmparj.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_-SwxOicj2jIXaZsZnknT5w_sStDzE2Y";
+  <section id="adminPanel" style="display:none; padding:20px; margin:20px auto; max-width:900px; background:#111; color:white; border-radius:12px;">
+    <h2>Inamke Universe Network — Admin Dashboard</h2>
+    <p id="adminStatus" role="status" aria-live="polite">Checking administrator access...</p>
+    <div id="adminStats"></div>
+    <h3>Registered Members</h3>
+    <input
+      type="search"
+      id="memberSearch"
+      placeholder="Search by member name or account ID..."
+      aria-label="Search members by name or account ID"
+      style="width:100%;padding:12px;margin:10px 0;border-radius:8px;box-sizing:border-box;"
+    >
+    <div id="adminMembers">Loading...</div>
+    <h3>Member Activity Report</h3>
+    <div id="memberActivityReport">Loading report...</div>
+    <h3>Recent Sharing Activity</h3>
+    <div id="adminActivity">Loading...</div>
+  </section>
 
-  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  <script>
+    const SUPABASE_URL = "https://dhyaqpiucpymbgbmparj.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_-SwxOicj2jIXaZsZnknT5w_sStDzE2Y";
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const authSection = document.getElementById("authSection");
-  const dashboard = document.getElementById("dashboard");
-  const form = document.getElementById("authForm");
-  const message = document.getElementById("message");
-  const dashboardMessage = document.getElementById("dashboardMessage");
+    const authSection = document.getElementById("authSection");
+    const dashboard = document.getElementById("dashboard");
+    const form = document.getElementById("authForm");
+    const message = document.getElementById("message");
+    const dashboardMessage = document.getElementById("dashboardMessage");
 
-  let loginMode = false;
+    let loginMode = false;
 
-  function showMessage(text) {
-    message.textContent = text;
-  }
+    function showMessage(text) {
+      message.textContent = text;
+    }
 
-  function setLoginMode(value) {
-    loginMode = value;
-    document.getElementById("formTitle").textContent =
-      loginMode ? "Welcome Back" : "Create Your Account";
-    document.getElementById("submitButton").textContent =
-      loginMode ? "Log In" : "Create Account";
-    document.getElementById("name").classList.toggle("hidden", loginMode);
-    document.getElementById("name").required = !loginMode;
-    document.getElementById("switchMode").textContent =
-      loginMode ? "Need an account? Sign up" : "Already have an account? Log in";
-    showMessage("");
-  }
+    function setLoginMode(value) {
+      loginMode = value;
+      document.getElementById("formTitle").textContent =
+        loginMode ? "Welcome Back" : "Create Your Account";
+      document.getElementById("submitButton").textContent =
+        loginMode ? "Log In" : "Create Account";
+      const nameInput = document.getElementById("name");
+      nameInput.classList.toggle("hidden", loginMode);
+      nameInput.required = !loginMode;
+      document.getElementById("password").autocomplete =
+        loginMode ? "current-password" : "new-password";
+      document.getElementById("switchMode").textContent =
+        loginMode ? "Need an account? Sign up" : "Already have an account? Log in";
+      showMessage("");
+    }
 
-  document.getElementById("switchMode").addEventListener("click", () => {
-    setLoginMode(!loginMode);
-  });
+    document.getElementById("switchMode").addEventListener("click", () => {
+      setLoginMode(!loginMode);
+    });
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    showMessage("Please wait...");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      showMessage("Please wait...");
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-    const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const name = document.getElementById("name").value.trim();
 
-    try {
-      if (loginMode) {
-        const { error } = await db.auth.signInWithPassword({
-          email,
-          password
-        });
-        if (error) throw error;
-      } else {
-        const { data, error } = await db.auth.signUp({
-          email,
-          password,
+      try {
+        if (loginMode) {
+          const { error } = await db.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+        } else {
+          const { data, error } = await db.auth.signUp({
+            email,
+            password,
+            options: {
+              data: { display_name: name },
+              emailRedirectTo: window.location.origin + window.location.pathname
+            }
+          });
+          if (error) throw error;
+
+          if (!data.session) {
+            showMessage("Account created! Check your email to confirm your account, then log in.");
+          } else {
+            showMessage("Account created successfully!");
+          }
+        }
+      } catch (error) {
+        showMessage(error.message || "Authentication failed. Please try again.");
+      }
+    });
+
+    document.getElementById("googleButton").addEventListener("click", async () => {
+      showMessage("Connecting to Google...");
+      try {
+        const { error } = await db.auth.signInWithOAuth({
+          provider: "google",
           options: {
-            data: { display_name: name },
-            emailRedirectTo: window.location.origin + window.location.pathname
+            redirectTo: window.location.origin + window.location.pathname
           }
         });
         if (error) throw error;
-
-        if (!data.session) {
-          showMessage("Account created! Check your email to confirm your account, then log in.");
-        } else {
-          showMessage("Account created successfully!");
-        }
-      }
-    } catch (error) {
-      showMessage(error.message);
-    }
-  });
-
-  document.getElementById("googleButton").addEventListener("click", async () => {
-    showMessage("Connecting to Google...");
-    const { error } = await db.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin + window.location.pathname
+      } catch (error) {
+        showMessage(error.message || "Google sign-in failed. Please try again.");
       }
     });
-    if (error) showMessage(error.message);
-  });
 
-  async function loadDashboard(user) {
-    authSection.classList.add("hidden");
-    dashboard.classList.remove("hidden");
-    dashboardMessage.textContent = "Loading your account...";
+    async function loadDashboard(user) {
+      authSection.classList.add("hidden");
+      dashboard.classList.remove("hidden");
+      dashboardMessage.textContent = "Loading your account...";
 
-    document.getElementById("welcome").textContent =
-      "Hello, " + (user.user_metadata?.display_name || user.email || "Member");
+      document.getElementById("welcome").textContent =
+        "Hello, " + (user.user_metadata?.display_name || user.email || "Member");
 
-    const { data: profile, error: profileError } = await db
-      .from("profiles")
-      .select("id, display_name")
-      .eq("id", user.id)
-      .maybeSingle();
+      const { data: profile, error: profileError } = await db
+        .from("profiles")
+        .select("id, display_name")
+        .eq("id", user.id)
+        .maybeSingle();
 
-    if (profileError) {
-      dashboardMessage.textContent = "Could not load your profile: " + profileError.message;
-      return;
-    }
-
-    if (!profile) {
-      const { error } = await db.from("profiles").insert({
-        id: user.id,
-        display_name: user.user_metadata?.display_name || ""
-      });
-      if (error) {
-        dashboardMessage.textContent = "Profile setup issue: " + error.message;
+      if (profileError) {
+        dashboardMessage.textContent = "Could not load your profile: " + profileError.message;
         return;
       }
+
+      if (!profile) {
+        const { error } = await db.from("profiles").insert({
+          id: user.id,
+          display_name: user.user_metadata?.display_name || ""
+        });
+        if (error) {
+          dashboardMessage.textContent = "Profile setup issue: " + error.message;
+          return;
+        }
+      }
+
+      const { data: entries, error: pointsError } = await db
+        .from("points_ledger")
+        .select("points")
+        .eq("user_id", user.id);
+
+      if (pointsError) {
+        dashboardMessage.textContent = "Could not load points: " + pointsError.message;
+        return;
+      }
+
+      const total = (entries || []).reduce((sum, item) => sum + Number(item.points || 0), 0);
+      document.getElementById("points").textContent = String(total);
+      dashboardMessage.textContent = "Your account is ready.";
     }
 
-    const { data: entries, error: pointsError } = await db
-      .from("points_ledger")
-      .select("points")
-      .eq("user_id", user.id);
-
-    if (pointsError) {
-      dashboardMessage.textContent = "Could not load points: " + pointsError.message;
-      return;
+    async function checkSession() {
+      const { data, error } = await db.auth.getSession();
+      if (error) {
+        showMessage(error.message);
+        return;
+      }
+      if (data.session) await loadDashboard(data.session.user);
     }
 
-    const total = (entries || []).reduce((sum, item) => sum + item.points, 0);
-    document.getElementById("points").textContent = total;
-    dashboardMessage.textContent = "Your account is ready.";
-  }
+    db.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        setTimeout(() => loadDashboard(session.user), 0);
+      } else if (event === "SIGNED_OUT") {
+        dashboard.classList.add("hidden");
+        authSection.classList.remove("hidden");
+        setLoginMode(true);
+      }
+    });
 
-  async function checkSession() {
-    const { data, error } = await db.auth.getSession();
-    if (error) {
-      showMessage(error.message);
-      return;
-    }
-    if (data.session) await loadDashboard(data.session.user);
-  }
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      dashboardMessage.textContent = "Logging out...";
+      const { error } = await db.auth.signOut();
+      if (error) dashboardMessage.textContent = error.message;
+    });
 
-  db.auth.onAuthStateChange((event, session) => {
-    if (session) {
-      setTimeout(() => loadDashboard(session.user), 0);
-    } else if (event === "SIGNED_OUT") {
-      dashboard.classList.add("hidden");
-      authSection.classList.remove("hidden");
-      setLoginMode(true);
-    }
-  });
+    checkSession();
+  </script>
 
-  document.getElementById("logoutButton").addEventListener("click", async () => {
-    dashboardMessage.textContent = "Logging out...";
-    const { error } = await db.auth.signOut();
-    if (error) dashboardMessage.textContent = error.message;
-  });
+  <script>
+    (async function () {
+      const panel = document.getElementById("adminPanel");
+      const status = document.getElementById("adminStatus");
 
-  checkSession();
-</script>
-</body><section id="adminPanel" style="display:none; padding:20px; margin:20px auto; max-width:900px; background:#111; color:white; border-radius:12px;">
-  <h2>Inamke Universe Network — Admin Dashboard</h2>
-  <p id="adminStatus">Checking administrator access...</p>
-  <div id="adminStats"></div>
-  <h3>Registered Members</h3><input
-  type="search"
-  id="memberSearch"
-  placeholder="Search by member name or account ID..."
-  style="width:100%;padding:12px;margin:10px 0;border-radius:8px;box-sizing:border-box;"
->
-  <div id="adminMembers">Loading...</div><h3>Member Activity Report</h3>
-<div id="memberActivityReport">Loading report...</div>
-  <h3>Recent Sharing Activity</h3>
-  <div id="adminActivity">Loading...</div>
-</section>
+      try {
+        const { data: isAdmin, error: adminError } = await db.rpc("is_admin");
 
-<script>
-(async function () {
-  const panel = document.getElementById('adminPanel');
-  const status = document.getElementById('adminStatus');
+        if (adminError || !isAdmin) {
+          status.textContent = "Administrator access only.";
+          return;
+        }
 
-  try {
-    const { data: isAdmin, error: adminError } = await db.rpc('is_admin');
+        panel.style.display = "block";
+        status.textContent = "Administrator access verified.";
 
-    if (adminError || !isAdmin) {
-      status.textContent = 'Administrator access only.';
-      return;
-    }
+        const [profilesResult, pointsResult, activityResult] = await Promise.all([
+          db.from("profiles").select("id, display_name, created_at"),
+          db.from("points_ledger").select("user_id, points"),
+          db.from("sharing_activity")
+            .select("user_id, provider, verified, created_at")
+            .order("created_at", { ascending: false })
+            .limit(20)
+        ]);
 
-    panel.style.display = 'block';
-    status.textContent = 'Administrator access verified.';
+        if (profilesResult.error || pointsResult.error || activityResult.error) {
+          status.textContent = "Access verified, but some dashboard data could not load. Check database policies.";
+          return;
+        }
 
-    const [profilesResult, pointsResult, activityResult] = await Promise.all([
-      db.from('profiles').select('id, display_name, created_at'),
-      db.from('points_ledger').select('user_id, points'),
-      db.from('sharing_activity').select('user_id, provider, verified, created_at').order('created_at', { ascending: false }).limit(20)
-    ]);
+        const profiles = profilesResult.data || [];
+        const points = pointsResult.data || [];
+        const activities = activityResult.data || [];
+        const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
 
-    if (profilesResult.error || pointsResult.error || activityResult.error) {
-      status.textContent = 'Access verified, but some dashboard data could not load. Check database policies.';
-      return;
-    }
+        document.getElementById("adminStats").innerHTML =
+          "<p>Registered members: <strong>" + profiles.length + "</strong></p>" +
+          "<p>Total points recorded: <strong>" + totalPoints + "</strong></p>" +
+          "<p>Sharing records: <strong>" + activities.length + "</strong></p>";
 
-    const profiles = profilesResult.data || [];
-    const points = pointsResult.data || [];
-    const activities = activityResult.data || [];
-    const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
+        document.getElementById("adminMembers").innerHTML = profiles.length
+          ? profiles.map(member => {
+              const memberPoints = points.filter(point => point.user_id === member.id);
+              const totalMemberPoints = memberPoints.reduce(
+                (sum, point) => sum + Number(point.points || 0), 0
+              );
+              const memberActivity = activities.filter(activity => activity.user_id === member.id);
 
-    document.getElementById('adminStats').innerHTML =
-      '<p>Registered members: <strong>' + profiles.length + '</strong></p>' +
-      '<p>Total points recorded: <strong>' + totalPoints + '</strong></p>' +
-      '<p>Sharing records: <strong>' + activities.length + '</strong></p>';
+              return `
+                <div style="padding:14px;margin:10px 0;background:#222;border-radius:10px;">
+                  <strong>${escapeAdminText(member.display_name || "Member")}</strong>
+                  <details style="margin-top:10px;">
+                    <summary style="cursor:pointer;padding:8px;">View Details</summary>
+                    <p>Account ID: ${escapeAdminText(member.id)}</p>
+                    <p>Joined: ${escapeAdminText(member.created_at || "Unknown")}</p>
+                    <p>Total points: ${totalMemberPoints}</p>
+                    <p>Points records: ${memberPoints.length}</p>
+                    <p>Sharing records in recent activity: ${memberActivity.length}</p>
+                  </details>
+                </div>
+              `;
+            }).join("")
+          : "<p>No member profiles found yet.</p>";
 
-    document.getElementById('adminMembers').innerHTML = profiles.length
-  ? profiles.map(member => {
-      const memberPoints = points.filter(p => p.user_id === member.id);
-      const totalMemberPoints = memberPoints.reduce(
-        (sum, p) => sum + Number(p.points || 0), 0
-      );
-      const memberActivity = activities.filter(a => a.user_id === member.id);
+        const memberSearch = document.getElementById("memberSearch");
+        memberSearch.addEventListener("input", function () {
+          const searchTerm = this.value.toLowerCase().trim();
+          document.querySelectorAll("#adminMembers > div").forEach(card => {
+            const memberText = card.textContent.toLowerCase();
+            card.style.display = memberText.includes(searchTerm) ? "block" : "none";
+          });
+        });
 
-      return `
-        <div style="padding:14px;margin:10px 0;background:#222;border-radius:10px;">
-          <strong>${escapeAdminText(member.display_name || 'Member')}</strong>
-          <details style="margin-top:10px;">
-            <summary style="cursor:pointer;padding:8px;">View Details</summary>
-            <p>Account ID: ${escapeAdminText(member.id)}</p>
-            <p>Joined: ${escapeAdminText(member.created_at || 'Unknown')}</p>
-            <p>Total points: ${totalMemberPoints}</p>
-            <p>Points records: ${memberPoints.length}</p>
-            <p>Sharing records in recent activity: ${memberActivity.length}</p>
-          </details>
-        </div>
-      `;
-    }).join('')
-  : '<p>No member profiles found yet.</p>';
-  
-    const memberSearch = document.getElementById('memberSearch');
+        document.getElementById("memberActivityReport").innerHTML = profiles.length
+          ? profiles.map(member => {
+              const memberPoints = points
+                .filter(point => point.user_id === member.id)
+                .reduce((sum, point) => sum + Number(point.points || 0), 0);
+              const memberRecords = activities.filter(activity => activity.user_id === member.id);
+              const verifiedRecords = memberRecords.filter(activity => activity.verified).length;
 
-memberSearch.addEventListener('input', function () {
-  const searchTerm = this.value.toLowerCase().trim();
+              return `
+                <div style="padding:12px;margin:8px 0;background:#222;color:white;border-radius:8px;">
+                  <strong>${escapeAdminText(member.display_name || "Member")}</strong>
+                  <p>Joined: ${escapeAdminText(member.created_at || "Unknown")}</p>
+                  <p>Recorded points: ${memberPoints}</p>
+                  <p>Sharing records in recent 20: ${memberRecords.length}</p>
+                  <p>Verified records in recent 20: ${verifiedRecords}</p>
+                  <p>Latest status: ${
+                    memberRecords.length
+                      ? (memberRecords[0].verified ? "Verified" : "Not verified")
+                      : "No recent record"
+                  }</p>
+                </div>
+              `;
+            }).join("")
+          : "<p>No member activity found.</p>";
 
-  document.querySelectorAll('#adminMembers > div').forEach(card => {
-    const memberText = card.textContent.toLowerCase();
-    card.style.display = memberText.includes(searchTerm) ? 'block' : 'none';
-  });
-});
-      
-      document.getElementById('memberActivityReport').innerHTML = profiles.length
-  ? profiles.map(member => {
-      const memberPoints = points
-        .filter(p => p.user_id === member.id)
-        .reduce((sum, p) => sum + Number(p.points || 0), 0);
+        document.getElementById("adminActivity").innerHTML = activities.length
+          ? activities.map(item =>
+              "<p>Provider: " + escapeAdminText(item.provider || "Not set") +
+              " — Verified: " + (item.verified ? "Yes" : "No") +
+              " — Date: " + escapeAdminText(item.created_at || "") + "</p>"
+            ).join("")
+          : "<p>No sharing activity recorded yet.</p>";
+      } catch (error) {
+        status.textContent = "Could not load admin dashboard. Please check your connection.";
+      }
 
-      const memberRecords = activities.filter(a => a.user_id === member.id);
-      const verifiedRecords = memberRecords.filter(a => a.verified).length;
-
-      return `
-        <div style="padding:12px;margin:8px 0;background:#222;color:white;border-radius:8px;">
-          <strong>${escapeAdminText(member.display_name || 'Member')}</strong>
-          <p>Joined: ${escapeAdminText(member.created_at || 'Unknown')}</p>
-          <p>Recorded points: ${memberPoints}</p>
-          <p>Sharing records in recent 20: ${memberRecords.length}</p>
-          <p>Verified records in recent 20: ${verifiedRecords}</p>
-          <p>Latest status: ${
-            memberRecords.length
-              ? (memberRecords[0].verified ? 'Verified' : 'Not verified')
-              : 'No recent record'
-          }</p>
-        </div>
-      `;
-    }).join('')
-  : '<p>No member activity found.</p>';
-
-document.getElementById('adminActivity').innerHTML = activities.length
-  ? activities.map(item =>
-      '<p>Provider: ' + escapeAdminText(item.provider || 'Not set') +
-      ' — Verified: ' + (item.verified ? 'Yes' : 'No') +
-      ' — Date: ' + escapeAdminText(item.created_at || '') + '</p>'
-    ).join('')
-  : '<p>No sharing activity recorded yet.</p>';
-      
-      
-      
-    
-  
-    
-         
-        
-      
-    
-
-    
-  
-    
-        
-        
-
-      
-      
-
-      
-        
-
-
-
-        
-          
-          
-          
-          
-          
-        
-            
-               
-              
-          
-        
-      
-    
-  
-      ? activities.map(item =>
-          t(item.provider || 'Not set') +
-          ' 
-        
-                       
-          
-        
-      : '<p>No sharing activity recorded yet.</p>';
-
-  } catch (error) {
-    status.textContent = 'Could not load admin dashboard. Please check your connection.';
-  }
-
-  function escapeAdminText(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;',
-      '"': '&quot;', "'": '&#39;'
-    }[char]));
-  }
-})();
-</script>
+      function escapeAdminText(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[char]));
+      }
+    })();
+  </script>
+</body>
 </html>
