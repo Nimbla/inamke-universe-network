@@ -328,7 +328,14 @@
           db.from("sharing_activity")
             .select("user_id, provider, verified, created_at")
             .order("created_at", { ascending: false })
-        ]);
+        ]);const { data: memberStatuses, error: memberStatusError } = await db
+  .from('member_status')
+  .select('user_id, status, admin_note, updated_at');
+
+if (memberStatusError) {
+  status.textContent = 'Could not load member statuses.';
+  return;
+}
 
         if (profilesResult.error || pointsResult.error || activityResult.error) {
           status.textContent = "Access verified, but some dashboard data could not load. Check database policies.";
