@@ -758,13 +758,22 @@ const pendingPayments = transactions.filter(item => item.status === "pending").l
         const todayActivities = activities.filter(item => item.created_at?.slice(0, 10) === today);
 
         document.getElementById("adminStats").innerHTML = `<div class="status-grid">
-          <p>Registered members: <strong>${profiles.length}</strong></p>
-          <p>Total points recorded: <strong>${totalPoints}</strong></p>
-          <p>Recent sharing records: <strong>${activities.length}</strong></p>
-          <p>Today's registrations: <strong>${todayRegistrations}</strong></p>
-          <p>Today's sharing records: <strong>${todayActivities.length}</strong></p>
-          <p>Verified activity today: <strong>${todayActivities.filter(item => item.verified).length}</strong></p>
-        </div>`;
+  <p>Registered members: <strong>${profiles.length}</strong></p>
+  <p>Total points recorded: <strong>${totalPoints}</strong></p>
+  <p>Recent sharing records: <strong>${activities.length}</strong></p>
+  <p>Today's registrations: <strong>${todayRegistrations}</strong></p>
+  <p>Today's sharing records: <strong>${todayActivities.length}</strong></p>
+  <p>Verified activity today: <strong>${todayActivities.filter(item => item.verified).length}</strong></p>
+  <p>Total verified transactions: <strong>${verifiedTransactions.length}</strong></p>
+  <p>Pending payments: <strong>${pendingPayments}</strong></p>
+</div>`;
+          
+          
+          
+          
+          
+        
+        
 
         document.getElementById("adminMembers").innerHTML = profiles.length
           ? profiles.map(member => {
