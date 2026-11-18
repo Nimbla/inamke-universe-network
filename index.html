@@ -787,7 +787,19 @@ const totalNairaRevenue = verifiedTransactions
   <p>Verified activity today: <strong>${todayActivities.filter(item => item.verified).length}</strong></p>
   <p>Total verified transactions: <strong>${verifiedTransactions.length}</strong></p>
   <p>Pending payments: <strong>${pendingPayments}</strong></p>
+  <p>Total verified NGN revenue: <strong>₦${totalNairaRevenue.toLocaleString("en-NG", {minimumFractionDigits: 2})}</strong></p>
+  <p>Today's NGN revenue: <strong>₦${todayRevenue.toLocaleString("en-NG", {minimumFractionDigits: 2})}</strong></p>
+  <p>This month's NGN revenue: <strong>₦${monthlyRevenue.toLocaleString("en-NG", {minimumFractionDigits: 2})}</strong></p>
 </div>`;
+  
+  
+  
+  
+  
+  
+  
+  
+
           
           
           
