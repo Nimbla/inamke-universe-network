@@ -743,6 +743,7 @@ a {
         const points = pointsResult.data || [];
         const activities = activityResult.data || [];
         const memberStatuses = statusesResult.data || [];
+        const transactions = transactionsResult.data || [];
         const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
         const today = new Date().toISOString().slice(0, 10);
         const todayRegistrations = profiles.filter(member => member.created_at?.slice(0, 10) === today).length;
