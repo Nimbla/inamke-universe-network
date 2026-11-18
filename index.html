@@ -816,6 +816,7 @@ const [profilesResult, pointsResult, activityResult, statusesResult, transaction
         const activities = activityResult.data || [];
         const memberStatuses = statusesResult.data || [];
         const transactions = transactionsResult.data || [];
+        const expenses = expensesResult.data || [];
         const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
         const verifiedTransactions = transactions.filter(item => item.status === "verified");
         
