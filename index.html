@@ -260,69 +260,159 @@ a {
       <p id="message" role="status" aria-live="polite"></p>
     </section>
 
-    <section id="dashboard" class="hidden">
-      <h2>Welcome to Your Inamke Universe Dashboard</h2>
-      <p class="small">Your personal space to manage membership, view points, and track platform activity.</p>
+    
+<section id="dashboard" class="hidden">
 
-      <div class="card">
-        <h3>My Account</h3>
-        <p id="welcome"></p>
-        <p><strong>Membership:</strong> Inamke Universe Network Member</p>
-        <p><strong>Account security:</strong> Protected login</p>
-      </div>
+  <div class="card">
+    <p class="small">INAMKE UNIVERSE NETWORK</p>
+    <h2>Welcome to Your Dashboard</h2>
+    <p>Your global digital membership space. Manage your account, follow your activity and explore platform services.</p>
+    <p id="welcome"></p>
+    <p><strong>Membership:</strong> Inamke Universe Network Member</p>
+    <p><strong>Account security:</strong> Protected login</p>
+  </div>
 
-      <div class="card">
-        <p>Your verified points</p>
-        <div class="points" id="points">0</div>
-        <p class="small">Points are displayed from recorded activity.</p>
-      </div>
+  <h3>My Overview</h3>
+  <div class="status-grid">
+    <div class="card">
+      <p class="small">MY VERIFIED POINTS</p>
+      <div class="points" id="points">0</div>
+      <p class="small">Points from recorded activity</p>
+    </div>
 
-      <div class="card">
-        <h3>My Activity History</h3>
-        <div id="memberActivity">Loading activity...</div>
-      </div>
+    <div class="card">
+      <p class="small">MEMBERSHIP STATUS</p>
+      <h3>Active</h3>
+      <p class="small">Registered member</p>
+    </div>
 
-      <div class="card">
-        <h3>Platform Status</h3>
-        <p><strong>Membership:</strong> Active platform registration</p>
-        <p><strong>Internet sharing:</strong> Not active yet</p>
-        <p><strong>Points system:</strong> Recording status only</p>
-        <p><strong>Withdrawals:</strong> Not available yet</p>
-        <p>Bandwidth sharing will only be enabled through an approved provider, with your permission.</p>
-      </div>
+    <div class="card">
+      <p class="small">REWARD STATUS</p>
+      <h3>Coming Soon</h3>
+      <p class="small">Cash withdrawals are not available</p>
+    </div>
+  </div>
 
-      <div class="card">
-        <h3>Rewards Overview</h3>
-        <p><strong>Current points:</strong> <span id="rewardPoints">0</span></p>
-        <p><strong>Withdrawal status:</strong> Not available yet</p>
-        <p class="small">Points are not currently redeemable for cash.</p>
-      </div>
+  <div class="card">
+    <h3>My Activity History</h3>
+    <div id="memberActivity">Loading activity...</div>
+  </div>
 
-      <div class="card">
-        <h3>Payout Account</h3>
-        <p>Payment account setup is coming soon.</p>
-        <p class="small">Payout status: Not available yet</p>
-      </div>
+  <h3>Network Services</h3>
+  <div class="card">
+    <h3>Business Promotion</h3>
+    <p>Discover future opportunities to promote businesses and services through the Inamke Universe Network.</p>
+    <p class="small">Service availability will be announced when ready.</p>
+  </div>
 
-      <div class="card">
-        <h3>Terms &amp; Conditions</h3>
-        <p>By creating an account, you agree to these terms. Internet sharing is not active. Points have no cash value and cannot be withdrawn. Earnings are not guaranteed. Misuse may result in suspension.</p>
-      </div>
+  <div class="card">
+    <h3>Internet Sharing</h3>
+    <p>Internet sharing is not active yet. It will only be enabled through an approved provider, with your permission.</p>
+  </div>
+
+  <div class="card">
+    <h3>Rewards Overview</h3>
+    <p><strong>Current points:</strong> <span id="rewardPoints">0</span></p>
+    <p><strong>Withdrawal status:</strong> Not available yet</p>
+    <p class="small">Points are not currently redeemable for cash. Earnings are not guaranteed.</p>
+  </div>
+
+  <div class="card">
+    <h3>Payout Account</h3>
+    <p>Payment account setup is coming soon.</p>
+    <p class="small">Payout status: Not available yet</p>
+  </div>
+
+  <div class="card">
+    <h3>Platform Status</h3>
+    <p><strong>Membership:</strong> Active platform registration</p>
+    <p><strong>Points system:</strong> Recording status only</p>
+    <p><strong>Withdrawals:</strong> Not available yet</p>
+  </div>
+
+  <div class="card">
+    <h3>Terms &amp; Conditions</h3>
+    <p>By creating an account, you agree to these terms. Internet sharing is not active. Points have no cash value and cannot be withdrawn. Earnings are not guaranteed. Misuse may result in suspension.</p>
+  </div>
+
+  <div class="card">
+    <h3>Privacy Policy</h3>
+    <p>We collect the display name, email address, account ID, points records, and platform activity needed to operate the account. Supabase and Google sign-in may process information according to their privacy policies. We do not sell personal information.</p>
+    <p class="small">Review this draft policy before an official launch.</p>
+  </div>
+
+  <div class="card">
+    <h3>Contact &amp; Support</h3>
+    <p>Need help with your account? <a href="mailto:inamkeuniverse@gmail.com">inamkeuniverse@gmail.com</a></p>
+  </div>
+
+  <button class="secondary" id="logoutButton" type="button">Log Out</button>
+  <p id="dashboardMessage" role="status" aria-live="polite"></p>
+
+</section>
+
+      
+      
+
+      
+        
+        
+        
+        
+      
+
+      
+        
+        
+        
+      
+
+      
+        
+        
+      
+
+      
+        
+        
+        
+        
+        
+        
+      
+
+      
+        
+        
+        
+        
+      
+
+      
+        
+        
+        
+      
+
+      
+        
+        
+      
 
       <div class="card">
         <h3>Privacy Policy</h3>
-        <p>We collect the display name, email address, account ID, points records, and platform activity needed to operate the account. Supabase and Google sign-in may process information according to their privacy policies. We do not sell personal information.</p>
-        <p class="small">Review this draft policy before an official launch.</p>
-      </div>
+        <p>We collect the display name, email address, account ID, points records, and platform activity needed to operate the account. Supabase and Goog
+        
+      
 
-      <div class="card">
-        <h3>Contact &amp; Support</h3>
-        <p>Need help with your account? <a href="mailto:inamkeuniverse@gmail.com">inamkeuniverse@gmail.com</a></p>
-      </div>
+      
+        
+        
+      
 
-      <button class="secondary" id="logoutButton" type="button">Log Out</button>
-      <p id="dashboardMessage" role="status" aria-live="polite"></p>
-    </section>
+      
+      
+    
 
     <p class="small" style="text-align:center;margin-top:25px;">
       Bandwidth sharing and rewards are not yet active.
