@@ -531,6 +531,44 @@ a {
   <h3>Revenue Breakdown</h3>
   <p class="small">Verified revenue grouped by transaction type and currency.</p>
   <div id="adminRevenueBreakdown">
+<div class="card" id="expensesManagement">
+  <h3>Expenses Management</h3>
+  <p class="small">Record and monitor Inamke Universe business expenses.</p>
+
+  <h3>Record New Expense</h3>
+
+  <input type="text" id="expenseDescription" placeholder="Expense description">
+
+  <select id="expenseCategory">
+    <option value="">Select expense category</option>
+    <option value="Advertising">Advertising</option>
+    <option value="Hosting">Server and Hosting</option>
+    <option value="Software">Software Subscriptions</option>
+    <option value="Marketing">Marketing</option>
+    <option value="Operations">Operations</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <input type="number" id="expenseAmount" placeholder="Amount" min="0.01" step="0.01">
+
+  <select id="expenseCurrency">
+    <option value="NGN">NGN - Nigerian Naira</option>
+    <option value="USD">USD - US Dollar</option>
+  </select>
+
+  <input type="date" id="expenseDate">
+
+  <button type="button" id="saveExpenseButton">Save Expense</button>
+
+  <p id="expenseMessage" role="status"></p>
+
+  <h3>Expense Summary</h3>
+  <div id="expenseSummary">Loading expenses...</div>
+
+  <h3>Expense History</h3>
+  <div id="expenseHistory">Loading expense records...</div>
+</div>
+
     Loading revenue breakdown...
   </div>
 </div>
