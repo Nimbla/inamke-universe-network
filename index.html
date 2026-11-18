@@ -771,6 +771,27 @@ const [profilesResult, pointsResult, activityResult, statusesResult, transaction
         const transactions = transactionsResult.data || [];
         const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
         const verifiedTransactions = transactions.filter(item => item.status === "verified");
+        
+const revenueGroups = {};
+
+verifiedTransactions.forEach(item => {
+  const type = item.transaction_type || "Other";
+  const currency = item.currency || "Unknown";
+  const key = `${type} - ${currency}`;
+
+  revenueGroups[key] = (revenueGroups[key] || 0) + Number(item.amount || 0);
+});
+
+document.getElementById("adminRevenueBreakdown").innerHTML =
+  Object.keys(revenueGroups).length === 0
+    ? "<p>No verified revenue records yet.</p>"
+    : Object.entries(revenueGroups).map(([type, amount]) => `
+        <div class="member-card">
+          <p><strong>${type}</strong></p>
+          <h3>${amount.toLocaleString()}</h3>
+        </div>
+      `).join("");
+
 
 const totalRevenue = verifiedTransactions.reduce(
   (sum, item) => sum + Number(item.amount || 0),
