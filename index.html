@@ -768,7 +768,20 @@ const totalRevenue = verifiedTransactions.reduce(
   (sum, item) => sum + Number(item.amount || 0),
   0
 );
-
+document.getElementById("adminRevenue").innerHTML =
+  transactions.length === 0
+    ? "<p>No payment records yet.</p>"
+    : `<div class="status-grid">
+        ${transactions.map(item => `
+          <div class="member-card">
+            <p><strong>Type:</strong> ${item.transaction_type}</p>
+            <p><strong>Amount:</strong> ${item.currency} ${Number(item.amount).toLocaleString()}</p>
+            <p><strong>Status:</strong> ${item.status}</p>
+            <p><strong>Reference:</strong> ${item.reference || "Not provided"}</p>
+            <p><strong>Date:</strong> ${new Date(item.created_at).toLocaleString()}</p>
+          </div>
+        `).join("")}
+      </div>`;
 const pendingPayments = transactions.filter(item => item.status === "pending").length;
         const today = new Date().toISOString().slice(0, 10);
         const todayRevenue = verifiedTransactions
