@@ -742,7 +742,7 @@ const [profilesResult, pointsResult, activityResult, statusesResult, transaction
   db.from("points_ledger").select("user_id, points"),
   db.from("sharing_activity").select("user_id, provider, verified, created_at").order("created_at", { ascending: false }),
   db.from("member_status").select("user_id, status, admin_note, updated_at"),
-  db.from("transactions").select("id, user_id, transaction_type, amount, currency, status, created_at, verified_at")
+  db.from("transactions").select("id, user_id, transaction_type, amount, currency, status, reference, created_at, verified_at")
 ]);
 
           
