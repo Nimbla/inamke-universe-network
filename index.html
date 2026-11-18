@@ -854,6 +854,48 @@ document.getElementById("expenseHistory").innerHTML =
           <p>Date: ${escapeExpenseText(item.expense_date)}</p>
         </div>
       `).join("");
+        
+document.getElementById("saveExpenseButton").addEventListener("click", async () => {
+  const description = document.getElementById("expenseDescription").value.trim();
+  const category = document.getElementById("expenseCategory").value;
+  const amount = Number(document.getElementById("expenseAmount").value);
+  const currency = document.getElementById("expenseCurrency").value;
+  const expenseDate = document.getElementById("expenseDate").value;
+
+  const message = document.getElementById("expenseMessage");
+  const button = document.getElementById("saveExpenseButton");
+
+  if (!description || !category || !amount || amount <= 0) {
+    message.textContent = "Please enter a description, category and valid amount.";
+    return;
+  }
+
+  button.disabled = true;
+  message.textContent = "Saving expense...";
+
+  const { error } = await db.from("expenses").insert({
+    description,
+    category,
+    amount,
+    currency,
+    expense_date: expenseDate || new Date().toISOString().slice(0, 10)
+  });
+
+  button.disabled = false;
+
+  if (error) {
+    message.textContent = "Could not save expense: " + error.message;
+    return;
+  }
+
+  message.textContent = "Expense saved successfully. Refresh the dashboard to see the updated records.";
+
+  document.getElementById("expenseDescription").value = "";
+  document.getElementById("expenseCategory").value = "";
+  document.getElementById("expenseAmount").value = "";
+  document.getElementById("expenseDate").value = "";
+});
+
 
         const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
         const verifiedTransactions = transactions.filter(item => item.status === "verified");
