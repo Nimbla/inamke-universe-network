@@ -860,6 +860,7 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
 
     async function loadDashboard(user) {
       if (!user?.id) return;
+      document.getElementById("welcomeSection").classList.add("hidden");
       dashboardUserId = user.id;
       authSection.classList.add("hidden");
       dashboard.classList.remove("hidden");
