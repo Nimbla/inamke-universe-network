@@ -836,6 +836,8 @@ a {
 
         panel.style.display = "block";
         status.textContent = "Administrator access verified.";
+        console.log("Admin verification:", isAdmin);
+console.log("Logged-in user:", (await db.auth.getUser()).data.user?.email);
         
 
 const [profilesResult, pointsResult, activityResult, statusesResult, transactionsResult, expensesResult] = await Promise.all([
