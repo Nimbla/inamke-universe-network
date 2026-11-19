@@ -808,17 +808,37 @@ a {
 
     function showMessage(text) { message.textContent = text; }
 
-    function setLoginMode(value) {
-      loginMode = value;
-      document.getElementById("formTitle").textContent = loginMode ? "Welcome Back" : "Create Your Account";
-      document.getElementById("submitButton").textContent = loginMode ? "Log In" : "Create Account";
-      const nameInput = document.getElementById("name");
-      nameInput.classList.toggle("hidden", loginMode);
-      nameInput.required = !loginMode;
-      document.getElementById("password").autocomplete = loginMode ? "current-password" : "new-password";
-      document.getElementById("switchMode").textContent = loginMode ? "Need an account? Sign up" : "Already have an account? Log in";
-      showMessage("");
-    }
+    
+function setLoginMode(value) {
+  loginMode = value;
+  document.getElementById("formTitle").textContent = loginMode ? "Welcome Back" : "Create Your Account";
+  document.getElementById("submitButton").textContent = loginMode ? "Log In" : "Create Account";
+
+  const nameInput = document.getElementById("name");
+  nameInput.classList.toggle("hidden", loginMode);
+  nameInput.required = !loginMode;
+
+  const termsContainer = document.getElementById("termsAgreementContainer");
+  const termsCheckbox = document.getElementById("termsAgreement");
+
+  termsContainer.classList.toggle("hidden", loginMode);
+  termsCheckbox.required = !loginMode;
+
+  document.getElementById("password").autocomplete = loginMode ? "current-password" : "new-password";
+  document.getElementById("switchMode").textContent = loginMode ? "Need an account? Sign up" : "Already have an account? Log in";
+  showMessage("");
+}
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    
 
     function toggleSwitchMode() { setLoginMode(!loginMode); }
 document.getElementById("welcomeRegisterButton").addEventListener("click", () => {
