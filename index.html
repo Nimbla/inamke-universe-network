@@ -955,7 +955,50 @@ document.getElementById("saveExpenseButton").addEventListener("click", async () 
     return;
   }
 
-  message.textContent = "Expense saved successfully. Refresh the dashboard to see the updated records.";
+  
+const { data: updatedExpenses, error: refreshError } = await db
+  .from("expenses")
+  .select("id, description, category, amount, currency, expense_date, created_at")
+  .order("expense_date", { ascending: false });
+
+if (refreshError) {
+  message.textContent = "Expense saved, but the history could not refresh: " + refreshError.message;
+  return;
+}
+
+expenses.splice(0, expenses.length, ...(updatedExpenses || []));
+
+const updatedTotals = {};
+
+expenses.forEach(item => {
+  const currency = item.currency || "NGN";
+  updatedTotals[currency] = (updatedTotals[currency] || 0) + Number(item.amount || 0);
+});
+
+document.getElementById("expenseSummary").innerHTML =
+  Object.keys(updatedTotals).length === 0
+    ? "<p>No expenses recorded yet.</p>"
+    : Object.entries(updatedTotals).map(([currency, amount]) => `
+        <div class="member-card">
+          <p><strong>Total ${currency} Expenses</strong></p>
+          <h3>${currency} ${amount.toLocaleString()}</h3>
+        </div>
+      `).join("");
+
+document.getElementById("expenseHistory").innerHTML =
+  expenses.length === 0
+    ? "<p>No expense records yet.</p>"
+    : expenses.map(item => `
+        <div class="member-card">
+          <p><strong>${escapeExpenseText(item.description)}</strong></p>
+          <p>Category: ${escapeExpenseText(item.category)}</p>
+          <p>Amount: ${escapeExpenseText(item.currency)} ${Number(item.amount).toLocaleString()}</p>
+          <p>Date: ${escapeExpenseText(item.expense_date)}</p>
+        </div>
+      `).join("");
+
+message.textContent = "Expense saved successfully. Summary and history updated.";
+
 
   document.getElementById("expenseDescription").value = "";
   document.getElementById("expenseCategory").value = "";
