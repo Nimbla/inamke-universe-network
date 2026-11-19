@@ -531,6 +531,36 @@ a {
   </div>
 </div>
 
+</div>
+
+<div class="card" id="recordIncome">
+  <h3>Record Business Income</h3>
+  <p class="small">Record actual payments received by Inamke Universe.</p>
+
+  <input type="text" id="incomeDescription" placeholder="Payment description">
+
+  <select id="incomeType">
+    <option value="">Select income source</option>
+    <option value="Membership">Membership</option>
+    <option value="Business Promotion">Business Promotion</option>
+    <option value="Advertising">Advertising</option>
+    <option value="Affiliate">Affiliate Income</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <input type="number" id="incomeAmount" placeholder="Amount" min="0.01" step="0.01">
+
+  <select id="incomeCurrency">
+    <option value="NGN">NGN - Nigerian Naira</option>
+    <option value="USD">USD - US Dollar</option>
+  </select>
+
+  <input type="text" id="incomeReference" placeholder="Payment reference (optional)">
+
+  <button type="button" id="recordIncomeButton">Record Income</button>
+  <p id="incomeMessage" role="status"></p>
+</div>
+
 <div class="card" id="revenueBreakdown">
   <h3>Revenue Breakdown</h3>
   <p class="small">Verified revenue grouped by transaction type and currency.</p>
