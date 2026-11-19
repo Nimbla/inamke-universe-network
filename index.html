@@ -791,7 +791,17 @@ a {
     }
 
     function toggleSwitchMode() { setLoginMode(!loginMode); }
+document.getElementById("welcomeRegisterButton").addEventListener("click", () => {
+  document.getElementById("welcomeSection").classList.add("hidden");
+  authSection.classList.remove("hidden");
+  setLoginMode(false);
+});
 
+document.getElementById("welcomeLoginButton").addEventListener("click", () => {
+  document.getElementById("welcomeSection").classList.add("hidden");
+  authSection.classList.remove("hidden");
+  setLoginMode(true);
+});
     document.getElementById("switchMode").addEventListener("click", toggleSwitchMode);
     document.getElementById("switchMode").addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") {
