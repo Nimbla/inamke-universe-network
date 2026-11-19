@@ -1030,6 +1030,123 @@ message.textContent = "Expense saved successfully. Summary and history updated."
         const totalPoints = points.reduce((sum, item) => sum + Number(item.points || 0), 0);
         const verifiedTransactions = transactions.filter(item => item.status === "verified");
         
+const financialCurrencies = ["NGN", "USD"];
+
+const formatFinancialAmount = (currency, amount) => {
+  const symbol = currency === "NGN" ? "₦" : "$";
+  return symbol + Number(amount || 0).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
+
+const financialTotals = {};
+
+financialCurrencies.forEach(currency => {
+  const revenue = verifiedTransactions
+    .filter(item => item.currency === currency)
+    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+  const expense = expenses
+    .filter(item => item.currency === currency)
+    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+  financialTotals[currency] = {
+    revenue,
+    expense,
+    net: revenue - expense
+  };
+});
+
+function renderFinancialSummary(currency) {
+  const totals = financialTotals[currency];
+  const container = document.getElementById(
+    currency === "NGN" ? "profitLossNGN" : "profitLossUSD"
+  );
+
+  container.innerHTML = `
+    <div class="status-grid">
+      <div class="member-card">
+        <p>Total Verified Revenue</p>
+        <h3>${formatFinancialAmount(currency, totals.revenue)}</h3>
+      </div>
+      <div class="member-card">
+        <p>Total Expenses</p>
+        <h3>${formatFinancialAmount(currency, totals.expense)}</h3>
+      </div>
+      <div class="member-card">
+        <p>Net ${totals.net >= 0 ? "Profit" : "Loss"}</p>
+        <h3>${formatFinancialAmount(currency, Math.abs(totals.net))}</h3>
+      </div>
+    </div>
+  `;
+}
+
+financialCurrencies.forEach(renderFinancialSummary);
+
+const monthlyFinancials = {};
+
+verifiedTransactions.forEach(item => {
+  if (!financialCurrencies.includes(item.currency)) return;
+
+  const month = item.created_at?.slice(0, 7);
+  if (!month) return;
+
+  const key = `${month}-${item.currency}`;
+
+  if (!monthlyFinancials[key]) {
+    monthlyFinancials[key] = {
+      month,
+      currency: item.currency,
+      revenue: 0,
+      expense: 0
+    };
+  }
+
+  monthlyFinancials[key].revenue += Number(item.amount || 0);
+});
+
+expenses.forEach(item => {
+  if (!financialCurrencies.includes(item.currency)) return;
+
+  const month = item.expense_date?.slice(0, 7);
+  if (!month) return;
+
+  const key = `${month}-${item.currency}`;
+
+  if (!monthlyFinancials[key]) {
+    monthlyFinancials[key] = {
+      month,
+      currency: item.currency,
+      revenue: 0,
+      expense: 0
+    };
+  }
+
+  monthlyFinancials[key].expense += Number(item.amount || 0);
+});
+
+const monthlyRecords = Object.values(monthlyFinancials)
+  .sort((a, b) => b.month.localeCompare(a.month));
+
+document.getElementById("monthlyProfitLoss").innerHTML =
+  monthlyRecords.length === 0
+    ? "<p>No monthly financial records yet.</p>"
+    : monthlyRecords.map(item => {
+        const net = item.revenue - item.expense;
+
+        return `
+          <div class="member-card">
+            <h4>${item.month} — ${item.currency}</h4>
+            <p>Revenue: ${formatFinancialAmount(item.currency, item.revenue)}</p>
+            <p>Expenses: ${formatFinancialAmount(item.currency, item.expense)}</p>
+            <p>Net ${net >= 0 ? "Profit" : "Loss"}:
+              ${formatFinancialAmount(item.currency, Math.abs(net))}
+            </p>
+          </div>
+        `;
+      }).join("");
+
 const revenueGroups = {};
 
 verifiedTransactions.forEach(item => {
