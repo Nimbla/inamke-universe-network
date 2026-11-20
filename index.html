@@ -856,7 +856,18 @@ function setLoginMode(value) {
   document.getElementById("switchMode").textContent = loginMode ? "Need an account? Sign up" : "Already have an account? Log in";
   showMessage("");
 }
+document.getElementById("togglePasswordButton").addEventListener("click", () => {
+  const passwordInput = document.getElementById("password");
+  const toggleButton = document.getElementById("togglePasswordButton");
 
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    toggleButton.textContent = "Hide Password";
+  } else {
+    passwordInput.type = "password";
+    toggleButton.textContent = "Show Password";
+  }
+});
       
       
       
