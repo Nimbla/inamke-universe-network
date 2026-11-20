@@ -1099,6 +1099,59 @@ const [profilesResult, pointsResult, activityResult, statusesResult, transaction
         const transactions = transactionsResult.data || [];
         const expenses = expensesResult.data || [];
         const policyAcceptances = policyResult.data || [];
+        const acceptanceByUser = new Map(
+  policyAcceptances.map(item => [item.user_id, item])
+);
+
+const acceptedMembers = profiles.filter(profile => {
+  const record = acceptanceByUser.get(profile.id);
+  return record?.privacy_policy_accepted === true &&
+         record?.terms_accepted === true;
+});
+
+const pendingMembers = profiles.filter(profile => {
+  const record = acceptanceByUser.get(profile.id);
+  return !record ||
+         record.privacy_policy_accepted !== true ||
+         record.terms_accepted !== true;
+});
+
+document.getElementById("policyAcceptanceSummary").innerHTML = `
+  <div class="member-card">
+    <h3>Total Members</h3>
+    <h2>${profiles.length}</h2>
+  </div>
+  <div class="member-card">
+    <h3>Accepted Both Policies</h3>
+    <h2>${acceptedMembers.length}</h2>
+  </div>
+  <div class="member-card">
+    <h3>Not Yet Recorded</h3>
+    <h2>${pendingMembers.length}</h2>
+  </div>
+`;
+
+document.getElementById("policyAcceptanceRecords").innerHTML =
+  profiles.length === 0
+    ? "<p>No member profiles found.</p>"
+    : profiles.map(profile => {
+        const record = acceptanceByUser.get(profile.id);
+        const accepted = record?.privacy_policy_accepted === true &&
+                         record?.terms_accepted === true;
+
+        return `
+          <div class="member-card">
+            <p><strong>${escapeText(profile.display_name || "Unnamed member")}</strong></p>
+            <p>Account ID: ${escapeText(profile.id)}</p>
+            <p>Status: ${accepted ? "Accepted both policies" : "Not yet recorded"}</p>
+            <p>Accepted at: ${
+              accepted && record.accepted_at
+                ? escapeText(new Date(record.accepted_at).toLocaleString())
+                : "Not recorded"
+            }</p>
+          </div>
+        `;
+      }).join("");
 const expenseTotals = {};
 
 expenses.forEach(item => {
