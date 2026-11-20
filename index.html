@@ -879,7 +879,11 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
             email,
             password,
             options: {
-              data: { display_name: name },
+              data: {
+  display_name: name,
+  privacy_policy_accepted: true,
+  terms_accepted: true
+},
               emailRedirectTo: window.location.origin + window.location.pathname
             }
           });
