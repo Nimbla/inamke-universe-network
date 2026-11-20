@@ -1064,7 +1064,7 @@ const [profilesResult, pointsResult, activityResult, statusesResult, transaction
           
         
 
-        if ([profilesResult, pointsResult, activityResult, statusesResult, transactionsResult, expensesResult].some(result => result.error)) {
+        if ([profilesResult, pointsResult, activityResult, statusesResult, transactionsResult, expensesResult, policyResult].some(result => result.error)) {
   status.textContent = "Some dashboard data could not load. Check database permissions.";
   console.error("Dashboard database errors:", {
     profiles: profilesResult.error,
@@ -1072,10 +1072,22 @@ const [profilesResult, pointsResult, activityResult, statusesResult, transaction
     activities: activityResult.error,
     statuses: statusesResult.error,
     transactions: transactionsResult.error,
-    expenses: expensesResult.error
+    expenses: expensesResult.error,
+    policies: policyResult.error
   });
   return;
 }
+  
+  
+    
+    
+    
+    
+    
+    
+  
+  
+
           
           
         
