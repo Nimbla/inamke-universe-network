@@ -963,6 +963,32 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
         showMessage(error.message || "Google sign-in failed. Please try again.");
       }
     });
+    document.getElementById("forgotPasswordButton").addEventListener("click", async (event) => {
+  event.preventDefault();
+
+  const emailInput = document.getElementById("email");
+  const email = emailInput.value.trim();
+
+  if (!email || !emailInput.checkValidity()) {
+    showMessage("Please enter your valid email address first.");
+    emailInput.focus();
+    return;
+  }
+
+  showMessage("Sending password recovery email...");
+
+  try {
+    const { error } = await db.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname
+    });
+
+    if (error) throw error;
+
+    showMessage("If an account exists with this email, a password recovery link will be sent. Please check your inbox.");
+  } catch (error) {
+    showMessage(error.message || "Could not send password recovery email. Please try again.");
+  }
+});
 
     async function loadDashboard(user) {
       if (!user?.id) return;
