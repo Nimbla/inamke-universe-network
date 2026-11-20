@@ -899,7 +899,16 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
           const { error } = await db.auth.signInWithPassword({ email, password });
           if (error) throw error;
         } else {
-          const { data, error } = await db.auth.signUp({
+  const termsCheckbox = document.getElementById("termsAgreement");
+
+  if (!termsCheckbox || !termsCheckbox.checked) {
+    showMessage("Account creation blocked! You must tick the agreement box and accept the Privacy Policy and Terms & Conditions before creating your account.");
+    termsCheckbox?.focus();
+    return;
+  }
+
+  const { data, error } = await db.auth.signUp({
+          
             email,
             password,
             options: {
