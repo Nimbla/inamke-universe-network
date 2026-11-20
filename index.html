@@ -853,6 +853,7 @@ function setLoginMode(value) {
   const termsCheckbox = document.getElementById("termsAgreement");
 
   termsContainer.classList.toggle("hidden", loginMode);
+  document.getElementById("forgotPasswordContainer").classList.toggle("hidden", !loginMode);
   termsCheckbox.required = !loginMode;
 
   document.getElementById("password").autocomplete = loginMode ? "current-password" : "new-password";
