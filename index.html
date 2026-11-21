@@ -1899,7 +1899,52 @@ const totalNairaRevenue = verifiedTransactions
       alert("Member status updated successfully.");
       window.location.reload();
     };
+    document.getElementById("adminPromotionRequests").addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-save-promotion]");
+  if (!button) return;
 
+  const requestId = button.getAttribute("data-save-promotion");
+  const statusSelect = document.querySelector(`[data-promotion-status="${requestId}"]`);
+  const noteInput = document.querySelector(`[data-promotion-note="${requestId}"]`);
+
+  if (!statusSelect || !noteInput) {
+    alert("Promotion request details could not be found.");
+    return;
+  }
+
+  if (!confirm("Save these business promotion changes?")) return;
+
+  button.disabled = true;
+  button.textContent = "Saving...";
+
+  try {
+    const { data: isAdmin, error: adminError } = await db.rpc("is_admin");
+
+    if (adminError || !isAdmin) {
+      throw new Error("Administrator permission required.");
+    }
+
+    const { error } = await db
+      .from("business_promotion_requests")
+      .update({
+        status: statusSelect.value,
+        admin_note: noteInput.value.trim(),
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", requestId);
+
+    if (error) throw error;
+
+    alert("Business promotion request updated successfully.");
+    await loadAdminPanel();
+
+  } catch (error) {
+    alert("Could not update promotion request: " + error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Save Changes";
+  }
+});
     checkSession();
     loadAdminPanel();
   </script>
