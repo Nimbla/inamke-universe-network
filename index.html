@@ -1315,8 +1315,7 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
 console.log("Logged-in user:", (await db.auth.getUser()).data.user?.email);
         
 
-
-const [profilesResult, pointsResult, activityResult, statusesResult, transactionsResult, expensesResult, policyResult] = await Promise.all([
+const [profilesResult, pointsResult, activityResult, statusesResult, transactionsResult, expensesResult, policyResult, promotionRequestsResult] = await Promise.all([
   db.from("profiles").select("id, display_name, created_at"),
   db.from("points_ledger").select("user_id, points"),
   db.from("sharing_activity").select("user_id, provider, verified, created_at").order("created_at", { ascending: false }),
@@ -1324,6 +1323,7 @@ const [profilesResult, pointsResult, activityResult, statusesResult, transaction
   db.from("transactions").select("id, user_id, transaction_type, amount, currency, status, reference, created_at, verified_at"),
   db.from("expenses").select("id, description, category, amount, currency, expense_date, created_at").order("expense_date", { ascending: false }),
   db.from("policy_acceptances").select("user_id, privacy_policy_accepted, terms_accepted, accepted_at")
+    db.from("business_promotion_requests").select("*").order("created_at", { ascending: false })
 ]);
 
   
