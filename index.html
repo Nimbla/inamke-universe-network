@@ -426,6 +426,32 @@ a {
       <p class="switch" id="switchMode" role="button" tabindex="0">Already have an account? Log in</p>
       <p id="message" role="status" aria-live="polite"></p>
     </section>
+    <section id="resetPasswordSection" class="hidden">
+  <h2>Reset Your Password</h2>
+  <p>Enter your new password below.</p>
+
+  <input
+    id="newPassword"
+    type="password"
+    placeholder="New password (minimum 6 characters)"
+    minlength="6"
+    required
+  >
+
+  <input
+    id="confirmNewPassword"
+    type="password"
+    placeholder="Confirm your new password"
+    minlength="6"
+    required
+  >
+
+  <button type="button" id="saveNewPasswordButton">
+    Save New Password
+  </button>
+
+  <p id="resetPasswordMessage" role="status" aria-live="polite"></p>
+</section>
 
     
 <section id="dashboard" class="hidden">
