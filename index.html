@@ -1078,6 +1078,13 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
 
     db.auth.onAuthStateChange(async (event, session) => {
       if (session) {
+                if (event === "PASSWORD_RECOVERY") {
+          welcomeSection.classList.add("hidden");
+          authSection.classList.add("hidden");
+          dashboard.classList.add("hidden");
+          document.getElementById("resetPasswordSection").classList.remove("hidden");
+          return;
+        }
         if (dashboardUserId !== session.user.id) {
           const { data: memberStatus, error: statusError } = await db
             .from("member_status").select("status").eq("user_id", session.user.id).maybeSingle();
