@@ -1449,6 +1449,27 @@ document.getElementById("policyAcceptanceRecords").innerHTML =
           </div>
         `;
       }).join("");
+        document.getElementById("adminPromotionRequests").innerHTML =
+  promotionRequests.length === 0
+    ? "<p>No business promotion requests have been submitted yet.</p>"
+    : promotionRequests.map(item => `
+        <div class="member-card">
+          <h3>${escapeText(item.business_name)}</h3>
+
+          <p>Category: ${escapeText(item.category)}</p>
+          <p>Member Account ID: ${escapeText(item.user_id)}</p>
+          <p>Description: ${escapeText(item.description)}</p>
+          <p>Promotion Goal: ${escapeText(item.promotion_goal)}</p>
+
+          <p>Website or Social Link: ${escapeText(item.website_url || "Not provided")}</p>
+          <p>Contact Email: ${escapeText(item.contact_email || "Not provided")}</p>
+          <p>Contact Phone: ${escapeText(item.contact_phone || "Not provided")}</p>
+
+          <p><strong>Status:</strong> ${escapeText(item.status.replace(/_/g, " "))}</p>
+          <p><strong>Admin Note:</strong> ${escapeText(item.admin_note || "No note added yet.")}</p>
+          <p>Submitted: ${escapeText(new Date(item.created_at).toLocaleString())}</p>
+        </div>
+      `).join("");
 const expenseTotals = {};
 
 expenses.forEach(item => {
