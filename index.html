@@ -1188,7 +1188,7 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
       }
             const { data: promotionRequests, error: promotionError } = await db
         .from("business_promotion_requests")
-        .select("business_name, category, promotion_goal, description, status, admin_note, created_at")
+        .select("business_name, category, promotion_goal, description, product_service_name, product_service_details, product_benefits, target_audience, business_location, promotion_offer, promotional_message, status, admin_note, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
