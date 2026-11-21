@@ -1281,6 +1281,7 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
     if (error) throw error;
 
     document.getElementById("businessPromotionForm").reset();
+    await loadDashboard(user);
     message.textContent = "Your business promotion request has been submitted successfully. It is now pending review.";
 
   } catch (error) {
