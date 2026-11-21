@@ -1465,8 +1465,22 @@ document.getElementById("policyAcceptanceRecords").innerHTML =
           <p>Contact Email: ${escapeText(item.contact_email || "Not provided")}</p>
           <p>Contact Phone: ${escapeText(item.contact_phone || "Not provided")}</p>
 
-          <p><strong>Status:</strong> ${escapeText(item.status.replace(/_/g, " "))}</p>
-          <p><strong>Admin Note:</strong> ${escapeText(item.admin_note || "No note added yet.")}</p>
+          
+          <p><strong>Current Status:</strong> ${escapeText(item.status.replace(/_/g, " "))}</p>
+
+<label>Update Request Status</label>
+<select data-promotion-status="${escapeText(item.id)}">
+  <option value="pending" ${item.status === "pending" ? "selected" : ""}>Pending</option>
+  <option value="under_review" ${item.status === "under_review" ? "selected" : ""}>Under Review</option>
+  <option value="approved" ${item.status === "approved" ? "selected" : ""}>Approved</option>
+  <option value="rejected" ${item.status === "rejected" ? "selected" : ""}>Rejected</option>
+  <option value="completed" ${item.status === "completed" ? "selected" : ""}>Completed</option>
+</select>
+
+<label>Administrator Note</label>
+<textarea data-promotion-note="${escapeText(item.id)}" placeholder="Write an update for this member">${escapeText(item.admin_note || "")}</textarea>
+
+<button type="button" data-save-promotion="${escapeText(item.id)}">Save Changes</button>
           <p>Submitted: ${escapeText(new Date(item.created_at).toLocaleString())}</p>
         </div>
       `).join("");
