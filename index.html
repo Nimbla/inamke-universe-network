@@ -509,11 +509,81 @@ a {
   </div>
 
   <h3>Network Services</h3>
-  <div class="card" id="businessPromotion">
-    <h3>Business Promotion</h3>
-    <p>Discover future opportunities to promote businesses and services through the Inamke Universe Network.</p>
-    <p class="small">Service availability will be announced when ready.</p>
+  
+<div class="card" id="businessPromotion">
+  <h3>Business Promotion</h3>
+  <p>Submit your business or service for consideration on Inamke Universe Network.</p>
+
+  <form id="businessPromotionForm">
+    <input
+      type="text"
+      id="promotionBusinessName"
+      placeholder="Business name"
+      required
+    >
+
+    <select id="promotionCategory" required>
+      <option value="">Select business category</option>
+      <option value="Technology">Technology</option>
+      <option value="Fashion">Fashion and Beauty</option>
+      <option value="Food">Food and Agriculture</option>
+      <option value="Education">Education</option>
+      <option value="Travel">Travel and Tourism</option>
+      <option value="Health">Health and Wellness</option>
+      <option value="Entertainment">Entertainment and Media</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <textarea
+      id="promotionDescription"
+      placeholder="Describe your business or service"
+      required
+    ></textarea>
+
+    <select id="promotionGoal" required>
+      <option value="">What do you want to promote?</option>
+      <option value="Brand Awareness">Brand Awareness</option>
+      <option value="Website Traffic">Website Traffic</option>
+      <option value="Product Sales">Product Sales</option>
+      <option value="Service Promotion">Service Promotion</option>
+      <option value="Audience Growth">Audience Growth</option>
+    </select>
+
+    <input
+      type="url"
+      id="promotionWebsite"
+      placeholder="Website or social media link (optional)"
+    >
+
+    <input
+      type="email"
+      id="promotionEmail"
+      placeholder="Business contact email (optional)"
+    >
+
+    <input
+      type="tel"
+      id="promotionPhone"
+      placeholder="Business contact phone (optional)"
+    >
+
+    <button type="submit" id="submitPromotionButton">
+      Submit Business for Review
+    </button>
+  </form>
+
+  <p id="promotionMessage" role="status"></p>
+
+  <h3>My Promotion Requests</h3>
+  <div id="myPromotionRequests">
+    Your submitted requests will appear here.
   </div>
+</div>
+
+    
+    
+    
+  
 
   
     
