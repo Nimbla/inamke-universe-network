@@ -1106,6 +1106,49 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
         setLoginMode(true);
       }
     });
+    document.getElementById("saveNewPasswordButton").addEventListener("click", async () => {
+  const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmNewPassword").value;
+  const message = document.getElementById("resetPasswordMessage");
+  const button = document.getElementById("saveNewPasswordButton");
+
+  if (newPassword.length < 6) {
+    message.textContent = "Password must contain at least 6 characters.";
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    message.textContent = "Your passwords do not match. Please try again.";
+    return;
+  }
+
+  button.disabled = true;
+  message.textContent = "Updating your password...";
+
+  try {
+    const { error } = await db.auth.updateUser({
+      password: newPassword
+    });
+
+    if (error) throw error;
+
+    document.getElementById("newPassword").value = "";
+    document.getElementById("confirmNewPassword").value = "";
+    document.getElementById("resetPasswordSection").classList.add("hidden");
+
+    await db.auth.signOut();
+
+    authSection.classList.remove("hidden");
+    setLoginMode(true);
+
+    showMessage("Your password has been updated successfully. Please log in with your new password.");
+
+  } catch (error) {
+    message.textContent = error.message || "Password update failed. Please try again.";
+  } finally {
+    button.disabled = false;
+  }
+});
 
     document.getElementById("logoutButton").addEventListener("click", async () => {
       dashboardMessage.textContent = "Logging out...";
