@@ -1212,6 +1212,13 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
 <p>Business Location: ${escapeText(item.business_location || "Not provided")}</p>
 <p>Special Offer: ${escapeText(item.promotion_offer || "None provided")}</p>
 <p>Advertising Message: ${escapeText(item.promotional_message || "Not provided")}</p>
+            <p>Product or Service: ${escapeText(item.product_service_name || "Not provided")}</p>
+<p>Product Details: ${escapeText(item.product_service_details || "Not provided")}</p>
+<p>Customer Benefits: ${escapeText(item.product_benefits || "Not provided")}</p>
+<p>Target Audience: ${escapeText(item.target_audience || "Not provided")}</p>
+<p>Business Location: ${escapeText(item.business_location || "Not provided")}</p>
+<p>Special Offer: ${escapeText(item.promotion_offer || "None provided")}</p>
+<p>Advertising Message: ${escapeText(item.promotional_message || "Not provided")}</p>
             <p>Status: ${escapeText(item.status.replace("_", " "))}</p>
             <p>Admin note: ${escapeText(item.admin_note || "No admin note yet.")}</p>
             <p>Submitted: ${escapeText(new Date(item.created_at).toLocaleString())}</p>
