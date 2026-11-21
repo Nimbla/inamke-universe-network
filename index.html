@@ -1137,6 +1137,31 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
           `<p>${escapeText(item.provider || "Platform activity")} — ${item.verified ? "Verified" : "Not verified"} — ${escapeText(new Date(item.created_at).toLocaleString())}</p>`
         ).join("");
       }
+            const { data: promotionRequests, error: promotionError } = await db
+        .from("business_promotion_requests")
+        .select("business_name, category, promotion_goal, description, status, admin_note, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      const promotionList = document.getElementById("myPromotionRequests");
+
+      if (promotionError) {
+        promotionList.textContent = "Unable to load your promotion requests.";
+      } else if (!promotionRequests?.length) {
+        promotionList.textContent = "You have not submitted any business promotion requests yet.";
+      } else {
+        promotionList.innerHTML = promotionRequests.map(item => `
+          <div class="member-card">
+            <h4>${escapeText(item.business_name)}</h4>
+            <p>Category: ${escapeText(item.category)}</p>
+            <p>Promotion goal: ${escapeText(item.promotion_goal)}</p>
+            <p>Description: ${escapeText(item.description)}</p>
+            <p>Status: ${escapeText(item.status.replace("_", " "))}</p>
+            <p>Admin note: ${escapeText(item.admin_note || "No admin note yet.")}</p>
+            <p>Submitted: ${escapeText(new Date(item.created_at).toLocaleString())}</p>
+          </div>
+        `).join("");
+      }
       dashboardMessage.textContent = "Your account is ready.";
     }
 
