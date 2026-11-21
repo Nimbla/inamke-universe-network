@@ -1395,6 +1395,7 @@ const [profilesResult, pointsResult, activityResult, statusesResult, transaction
         const transactions = transactionsResult.data || [];
         const expenses = expensesResult.data || [];
         const policyAcceptances = policyResult.data || [];
+        const promotionRequests = promotionRequestsResult.data || [];
         const acceptanceByUser = new Map(
   policyAcceptances.map(item => [item.user_id, item])
 );
