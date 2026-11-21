@@ -1225,6 +1225,45 @@ document.getElementById("welcomeLoginButton").addEventListener("click", () => {
       const { error } = await db.auth.signOut();
       if (error) dashboardMessage.textContent = error.message;
     });
+    document.getElementById("businessPromotionForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const button = document.getElementById("submitPromotionButton");
+  const message = document.getElementById("promotionMessage");
+
+  button.disabled = true;
+  message.textContent = "Submitting your business for review...";
+
+  try {
+    const { data: { user }, error: userError } = await db.auth.getUser();
+
+    if (userError) throw userError;
+    if (!user) throw new Error("Please log in before submitting.");
+
+    const { error } = await db
+      .from("business_promotion_requests")
+      .insert({
+        user_id: user.id,
+        business_name: document.getElementById("promotionBusinessName").value.trim(),
+        category: document.getElementById("promotionCategory").value,
+        description: document.getElementById("promotionDescription").value.trim(),
+        promotion_goal: document.getElementById("promotionGoal").value,
+        website_url: document.getElementById("promotionWebsite").value.trim() || null,
+        contact_email: document.getElementById("promotionEmail").value.trim() || null,
+        contact_phone: document.getElementById("promotionPhone").value.trim() || null
+      });
+
+    if (error) throw error;
+
+    document.getElementById("businessPromotionForm").reset();
+    message.textContent = "Your business promotion request has been submitted successfully. It is now pending review.";
+
+  } catch (error) {
+    message.textContent = error.message || "Submission failed. Please try again.";
+  } finally {
+    button.disabled = false;
+  }
+});
 
     async function loadAdminPanel() {
       const panel = document.getElementById("adminPanel");
